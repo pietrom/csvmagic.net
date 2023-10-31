@@ -4,8 +4,8 @@ stages:
   - build
   - test
 #  - reporting
-#  - pack
-#  - deploy
+  - pack
+  - deploy
 
 variables:
   TOOLS_DIR: "tools"
@@ -47,19 +47,25 @@ run_tests:
 #    paths:
 #      - "**/$COVERAGE_DIR/html-report"
 #
-#pack_assemblies:
-#  stage: pack
-#  artifacts:
-#    paths:
-#      - "**/bin/${CONFIGURATION}/*.nupkg"
-#  script:
-#    - for prj in $(find . -name CsvMagic*.csproj) ; do cd $(dirname $prj) ; if [ $CI_COMMIT_REF_NAME == "release" ] ; then dotnet pack --configuration $CONFIGURATION ; else dotnet pack --version-suffix "build.${CI_PIPELINE_IID}" --configuration $CONFIGURATION ; fi ; cd .. ; done
-#
-#publish_assemblies:
-#  stage: deploy
-#  script:
-#    - for package in $(find . -name PostOffice*.nupkg) ; do dotnet nuget push -s https://api.nuget.org/v3/index.json -k ${NUGET_PUSH_KEY} ${package} ; done
-#
+pack_assemblies:
+  stage: pack
+  rules:
+    - if: '$CI_COMMIT_TAG'
+  artifacts:
+    paths:
+      - "**/bin/${CONFIGURATION}/*.nupkg"
+  variables:
+    SEARCH: '<Version>1.0.7777.0</Version>'
+    REPLACE: "<Version>${CI_COMMIT_TAG}</Version>"
+  script:
+
+    - for prj in $(find . -name CsvMagic*.csproj) ; do sed -i "s/$SEARCH/$REPLACE/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; done
+
+publish_assemblies:
+  stage: deploy
+  script:
+    - for package in $(find . -name CsvMagic*.nupkg) ; do dotnet nuget push -s https://api.nuget.org/v3/index.json -k ${NUGET_PUSH_KEY} ${package} ; done
+
 #pages:
 #  stage: deploy
 #  dependencies:
