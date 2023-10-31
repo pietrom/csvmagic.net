@@ -55,13 +55,14 @@ public class CsvReadingEngine<TRow>
         }
     }
 
+    private const char DoubleQuote = '"'; // TODO duplicated
+
     private IEnumerable<string> GetLineFields(string? line)
     {
-        if (line == null)
+        if (string.IsNullOrEmpty(line))
         {
             return Enumerable.Empty<string>();
         }
-
         return line.Split(_csvRowAttr.Delimiter);
     }
 

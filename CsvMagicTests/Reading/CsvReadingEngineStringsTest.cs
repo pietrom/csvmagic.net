@@ -25,10 +25,13 @@ public class CsvReadingEngineStringsTest
     [TestCase("AAA,BBB", "AAA", "BBB")]
     [TestCase(",BBB", "", "BBB")]
     [TestCase("AAA,", "AAA", "")]
+    [TestCase("\"AAA,\"", "\"AAA", "\"")]
     // Quoted text
     [TestCase("\"AAA\",\"BBB\"", "AAA", "BBB")]
     [TestCase("\"A\"\"A\"\"A\",\"BBB\"", "A\"A\"A", "BBB")]
     [TestCase("\"\"\"A\"\"\",\"BBB\"", "\"A\"", "BBB")]
+    // [TestCase("\"via Garibaldi, 28\"", "via Garibaldi, 28", "BBB")]
+    [TestCase("AA\"A,\"BBB\"", "AA\"A", "BBB")]
     public async Task Read(string input, string text1, string text2)
     {
         var row = await ReadSingleLIneAsCsv(input);
