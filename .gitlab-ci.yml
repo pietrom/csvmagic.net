@@ -55,8 +55,8 @@ pack_assemblies:
     paths:
       - "**/bin/${CONFIGURATION}/*.nupkg"
   variables:
-    SEARCH: '<Version>1.0.7777.0</Version>'
-    REPLACE: "<Version>${CI_COMMIT_TAG}</Version>"
+    SEARCH: '<Version>.+<\/Version>'
+    REPLACE: "<Version>1.2.3<\/Version>"
   script:
 
     - for prj in $(find . -name CsvMagic*.csproj) ; do sed -i "s/$SEARCH/$REPLACE/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; done
