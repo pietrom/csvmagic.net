@@ -14,6 +14,11 @@ public class CsvReadingEngineTest
         engine = new CsvReadingEngineFactory().Create<CsvReadData>(() => new CsvReadData());
     }
 
+    private async Task<List<CsvReadData>> ReadAsCsv(string input, bool? handleHeadersRow = null)
+    {
+        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), handleHeadersRow).ToListAsync();
+    }
+
     [Test]
     public async Task Read()
     {
@@ -21,7 +26,7 @@ public class CsvReadingEngineTest
 1,pietrom,19,1978-03-19,19780319,
 2,russocri,11,1978-11-11,19781111,1978-11-11
 ";
-        var rows = await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input)))).ToListAsync();
+        var rows = await ReadAsCsv(input);
         Assert.That(rows, Is.EquivalentTo(new[]
         {
             new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null},
@@ -35,7 +40,7 @@ public class CsvReadingEngineTest
         var input = @"1,pietrom,19,1978-03-19,19780319,
 2,russocri,11,1978-11-11,19781111,1978-11-11
 ";
-        var rows = await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), false).ToListAsync();
+        var rows = await ReadAsCsv(input, false);
         Assert.That(rows, Is.EquivalentTo(new[]
         {
             new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null},
