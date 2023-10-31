@@ -15,7 +15,8 @@ public class CsvReadingEngine<TRow>
     {
         _rowFactory = rowFactory;
         _metadata = InitParsers(parsers);
-        _csvRowAttr = AttributeHelper.GetCsvRowAttribute(typeof(TRow)) ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
+        _csvRowAttr = AttributeHelper.GetCsvRowAttribute(typeof(TRow)) ??
+                      throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
     }
 
     private IReadOnlyList<(PropertyInfo, FieldParser)> InitParsers(
@@ -51,6 +52,7 @@ public class CsvReadingEngine<TRow>
                 var text = fieldsEnumerator.Current;
                 info.SetValue(row, parser.Parse(text));
             }
+
             yield return row;
         }
     }
@@ -59,11 +61,23 @@ public class CsvReadingEngine<TRow>
 
     private IEnumerable<string> GetLineFields(string? line)
     {
-        if (string.IsNullOrEmpty(line))
+        string? rest = line ?? string.Empty;
+        while (rest != null)
         {
-            return Enumerable.Empty<string>();
+            var (n, r) =  GetNextAndRest(rest);
+            rest = r;
+            yield return n;
         }
-        return line.Split(_csvRowAttr.Delimiter);
+    }
+
+    private (string, string?) GetNextAndRest(string text)
+    {
+        var firstDelimiter = text.IndexOf(_csvRowAttr.Delimiter);
+        var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
+            : firstDelimiter < 0 ? text : string.Empty;
+
+        var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
+        return (next, rest);
     }
 
     private string Sanitize(string text)
