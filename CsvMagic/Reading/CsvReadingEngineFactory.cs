@@ -6,6 +6,7 @@ public class CsvReadingEngineFactory
 {
     private readonly IDictionary<Type, FieldParser> _defaultParsers = new Dictionary<Type, FieldParser>()
     {
+        { typeof(string), new DefaultStringParser()},
         { typeof(int), new DefaultIntParser()},
         { typeof(int?), new DefaultIntParser()},
         { typeof(long), new DefaultLongParser()},
