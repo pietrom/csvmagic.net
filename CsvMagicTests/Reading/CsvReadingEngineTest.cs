@@ -22,9 +22,11 @@ public class CsvReadingEngineTest
 2,russocri,11,1978-11-11,19781111,1978-11-11
 ";
         var rows = await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input)))).ToListAsync();
-        Assert.That(rows.Count, Is.EqualTo(2));
-        Assert.That(rows[0], Is.EqualTo(new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null}));
-        Assert.That(rows[1], Is.EqualTo(new CsvReadData { Counter = 2, StringValue = "russocri", LongValue = 11, DefaultDateOnly = new DateOnly(1978, 11, 11), CustomDateOnly = new DateOnly(1978, 11, 11), DefaultNullableDateOnly = new DateOnly(1978, 11, 11)}));
+        Assert.That(rows, Is.EquivalentTo(new[]
+        {
+            new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null},
+            new CsvReadData { Counter = 2, StringValue = "russocri", LongValue = 11, DefaultDateOnly = new DateOnly(1978, 11, 11), CustomDateOnly = new DateOnly(1978, 11, 11), DefaultNullableDateOnly = new DateOnly(1978, 11, 11)}
+        }));
     }
 
     [Test]
@@ -34,8 +36,10 @@ public class CsvReadingEngineTest
 2,russocri,11,1978-11-11,19781111,1978-11-11
 ";
         var rows = await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), false).ToListAsync();
-        Assert.That(rows.Count, Is.EqualTo(2));
-        Assert.That(rows[0], Is.EqualTo(new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null}));
-        Assert.That(rows[1], Is.EqualTo(new CsvReadData { Counter = 2, StringValue = "russocri", LongValue = 11, DefaultDateOnly = new DateOnly(1978, 11, 11), CustomDateOnly = new DateOnly(1978, 11, 11), DefaultNullableDateOnly = new DateOnly(1978, 11, 11)}));
+        Assert.That(rows, Is.EquivalentTo(new[]
+        {
+            new CsvReadData { Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19), CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null},
+            new CsvReadData { Counter = 2, StringValue = "russocri", LongValue = 11, DefaultDateOnly = new DateOnly(1978, 11, 11), CustomDateOnly = new DateOnly(1978, 11, 11), DefaultNullableDateOnly = new DateOnly(1978, 11, 11)}
+        }));
     }
 }
