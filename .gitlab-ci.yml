@@ -55,7 +55,7 @@ pack_assemblies:
     paths:
       - "**/bin/${CONFIGURATION}/*.nupkg"
   script:
-    - for prj in $(find . -name CsvMagic*.csproj) ; do  if [[ ${prj} != *"Tests"* ]] ; then sed -i "s/@VERSION@/$CI_COMMIT_TAG/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; fi ; done
+    - for prj in $(find . -name CsvMagic*.csproj) ; do  if [[ ${prj} != *"Tests"* ]] ; then sed -i "s/VERSION/$CI_COMMIT_TAG/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; fi ; done
 
 publish_assemblies:
   stage: deploy
