@@ -13,7 +13,7 @@ public class DefaultStringParser : FieldParser
     {
         if (text[0] == DoubleQuote && text[^1] == DoubleQuote)
         {
-            return text.Substring(1, text.Length - 2);
+            return text.Substring(1, text.Length - 2).Replace("\"\"", "\"");
         }
 
         return text;
