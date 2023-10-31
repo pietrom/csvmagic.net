@@ -54,12 +54,8 @@ pack_assemblies:
   artifacts:
     paths:
       - "**/bin/${CONFIGURATION}/*.nupkg"
-  variables:
-    SEARCH: '<Version>.+<\/Version>'
-    REPLACE: "<Version>1.2.3<\/Version>"
   script:
-
-    - for prj in $(find . -name CsvMagic*.csproj) ; do sed -i "s/$SEARCH/$REPLACE/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; done
+    - for prj in $(find . -name CsvMagic*.csproj) ; do  if [[ ${prj} != *"Tests"* ]] ; then sed -i "s/@VERSION@/$CI_COMMIT_TAG/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; fi ; done
 
 publish_assemblies:
   stage: deploy
