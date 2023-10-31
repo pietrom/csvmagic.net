@@ -30,9 +30,10 @@ public class CsvReadingEngine<TRow>
             ).ToList();
     }
 
-    public async IAsyncEnumerable<TRow> Read(StreamReader reader)
+    public async IAsyncEnumerable<TRow> Read(StreamReader reader, bool? handleHeadersRow = null)
     {
-        if (_csvRowAttr.HandleHeaderRow)
+        var hasHeader = handleHeadersRow.HasValue ? handleHeadersRow.Value : _csvRowAttr.HandleHeaderRow;
+        if (hasHeader)
         {
             await reader.ReadLineAsync();
         }
