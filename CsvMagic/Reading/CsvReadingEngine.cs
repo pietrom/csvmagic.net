@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 using CsvMagic.Reading.Parsers;
 using CsvMagic.Reflection;
 
@@ -64,7 +65,7 @@ public class CsvReadingEngine<TRow>
         string? rest = line ?? string.Empty;
         while (rest != null)
         {
-            var (n, r) =  GetNextAndRest(rest);
+            var (n, r) = GetNextAndRest(rest);
             rest = r;
             yield return n;
         }
@@ -72,17 +73,56 @@ public class CsvReadingEngine<TRow>
 
     private (string, string?) GetNextAndRest(string text)
     {
-        var firstDelimiter = text.IndexOf(_csvRowAttr.Delimiter);
-        var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
-            : firstDelimiter < 0 ? text : string.Empty;
+        if (string.IsNullOrEmpty(text))
+        {
+            return (string.Empty, null);
+        }
 
-        var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
-        return (next, rest);
+        if (text[0] != DoubleQuote)
+        {
+            var firstDelimiter = text.IndexOf(_csvRowAttr.Delimiter);
+            var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
+                : firstDelimiter < 0 ? text : string.Empty;
+
+            var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
+            return (next, rest);
+        }
+
+        var nextIndex = 1;
+        var qoutesInARow = 0;
+        bool go = true;
+        while (nextIndex < text.Length && go)
+        {
+            if (text[nextIndex] == _csvRowAttr.Delimiter && qoutesInARow > 0)
+            {
+                if (qoutesInARow % 2 == 1)
+                {
+                    go = false;
+                }
+                else
+                {
+                    qoutesInARow = 0;
+                    nextIndex++;
+                }
+            }
+            else if (text[nextIndex] == DoubleQuote)
+            {
+                qoutesInARow++;
+                nextIndex++;
+            }
+            else
+            {nextIndex++;
+            }
+        }
+
+        return nextIndex < text.Length - 2
+            ? (Sanitize(text.Substring(1, nextIndex - 2)), text.Substring(nextIndex + 1))
+            : (Sanitize(text.Substring(1, text.Length - 2)), null);
     }
 
     private string Sanitize(string text)
     {
-        return text.Contains(_csvRowAttr.Delimiter) ? $"\"{text}\"" : text;
+        return text.Replace($"{DoubleQuote}{DoubleQuote}", $"{DoubleQuote}");
     }
 
     private FieldParser? GetParserFor(PropertyInfo p)

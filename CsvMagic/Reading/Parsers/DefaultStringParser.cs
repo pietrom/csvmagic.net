@@ -6,7 +6,7 @@ public class DefaultStringParser : FieldParser
 
     public object? Parse(string? text)
     {
-        return string.IsNullOrEmpty(text) ? string.Empty : Unquote(text);
+        return string.IsNullOrEmpty(text) ? string.Empty : text;
     }
 
     private string Unquote(string text)
