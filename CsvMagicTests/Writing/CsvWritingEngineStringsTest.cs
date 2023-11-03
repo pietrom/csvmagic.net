@@ -8,6 +8,8 @@ namespace CsvMagicTests.Writing;
 public class CsvWritingEngineStringsTest
 {
     [TestCase("AAA", "BBB", "AAA,BBB")]
+    [TestCase("\"AAA", "BBB", "\"\"\"AAA\",BBB")]
+    [TestCase("A,A", "BBB", "\"A,A\",BBB")]
     public async Task SerializeCsv(string input0, string input1, string output)
     {
         var engine = new CsvWritingEngineFactory().Create<CsvTextData>();

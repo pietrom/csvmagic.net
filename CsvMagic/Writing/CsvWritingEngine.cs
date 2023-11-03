@@ -51,7 +51,8 @@ public class CsvWritingEngine<TRow>
 
     private string Sanitize(string text)
     {
-        return text.Contains(_csvRowAttr.Delimiter) ? $"\"{text}\"" : text;
+        var escaped = text.Replace("\"", "\"\"");
+        return (text.Contains(_csvRowAttr.Delimiter) || text.Contains('"')) ? $"\"{escaped}\"" : escaped;
     }
 
     private FieldRenderer? GetSerializerFor(PropertyInfo p)
