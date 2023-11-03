@@ -49,9 +49,11 @@ public class CsvReadingEngine<TRow>
 
             foreach (var (info, parser) in _metadata)
             {
-                fieldsEnumerator.MoveNext();
-                var text = fieldsEnumerator.Current;
-                info.SetValue(row, parser.Parse(text));
+                if (fieldsEnumerator.MoveNext())
+                {
+                    var text = fieldsEnumerator.Current;
+                    info.SetValue(row, parser.Parse(text));
+                }
             }
 
             yield return row;
@@ -111,13 +113,14 @@ public class CsvReadingEngine<TRow>
                 nextIndex++;
             }
             else
-            {nextIndex++;
+            {
+                nextIndex++;
             }
         }
 
-        return nextIndex < text.Length - 2
+        return nextIndex <= text.Length - 1
             ? (Sanitize(text.Substring(1, nextIndex - 2)), text.Substring(nextIndex + 1))
-            : (Sanitize(text.Substring(1, text.Length - 2)), null);
+            : (Sanitize(text.Substring(1, text.Length - 2)), text.Last() == _csvRowAttr.Delimiter ? string.Empty : null);
     }
 
     private string Sanitize(string text)

@@ -26,6 +26,8 @@ public class CsvReadingEngineStringsTest
     [TestCase(",BBB", "", "BBB")]
     [TestCase("AAA,", "AAA", "")]
     [TestCase("\"\"\"AAA\",\"\"\"\"", "\"AAA", "\"")]
+    [TestCase("\"AAA,\"", "AAA,", null)]
+    [TestCase("\"AAA,\",", "AAA,", "")]
     // Quoted text
     [TestCase("\"AAA\",\"BBB\"", "AAA", "BBB")]
     [TestCase("\"A\"\"A\"\"A\",\"BBB\"", "A\"A\"A", "BBB")]
