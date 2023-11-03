@@ -2,5 +2,5 @@ namespace CsvMagic.Writing;
 
 public interface FieldRenderer
 {
-    string Render(object? value);
+    string Render(CsvOptions options, object? value);
 }

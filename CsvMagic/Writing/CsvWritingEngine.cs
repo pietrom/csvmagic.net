@@ -7,13 +7,13 @@ namespace CsvMagic.Writing;
 public class CsvWritingEngine<TRow>
 {
     private static readonly FieldRenderer DefaultRenderer = new DefaultRenderer();
-    private readonly IReadOnlyList<(PropertyInfo, FieldRenderer)> _metadata;
-    private readonly CsvRow _csvRowAttr;
+    private readonly IReadOnlyList<(PropertyInfo, FieldRenderer)> metadata;
+    private readonly CsvOptions options;
 
     internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers)
     {
-        _metadata = InitSerializers(renderers);
-        _csvRowAttr = AttributeHelper.GetCsvRowAttribute(typeof(TRow)) ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
+        metadata = InitSerializers(renderers);
+        options = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
     }
 
     private IReadOnlyList<(PropertyInfo, FieldRenderer)> InitSerializers(
@@ -30,9 +30,9 @@ public class CsvWritingEngine<TRow>
 
     public async Task Write(IEnumerable<TRow> rows, StreamWriter writer)
     {
-        if (_csvRowAttr.HandleHeaderRow)
+        if (options.HandleHeaderRow)
         {
-            var headers = BuildHeadersRow(_csvRowAttr.Delimiter);
+            var headers = BuildHeadersRow(options.Delimiter);
             await writer.WriteLineAsync(headers);
         }
 
@@ -46,13 +46,13 @@ public class CsvWritingEngine<TRow>
 
     private string BuildDataRow(TRow row)
     {
-        return string.Join(_csvRowAttr.Delimiter, _metadata.Select(x => Sanitize(x.Item2.Render(x.Item1.GetValue(row)))));
+        return string.Join(options.Delimiter, metadata.Select(x => Sanitize(x.Item2.Render(options, x.Item1.GetValue(row)))));
     }
 
     private string Sanitize(string text)
     {
-        var escaped = text.Replace("\"", "\"\"");
-        return (text.Contains(_csvRowAttr.Delimiter) || text.Contains('"')) ? $"\"{escaped}\"" : escaped;
+        var escaped = text.Replace($"{options.Quoting}", $"{options.Quoting}{options.Quoting}");
+        return (text.Contains(options.Delimiter) || text.Contains('"')) ? $"{options.Quoting}{escaped}{options.Quoting}" : escaped;
     }
 
     private FieldRenderer? GetSerializerFor(PropertyInfo p)
@@ -69,6 +69,6 @@ public class CsvWritingEngine<TRow>
 
     private string BuildHeadersRow(char delimiter)
     {
-        return string.Join(delimiter, _metadata.Select(x => x.Item1.Name));
+        return string.Join(delimiter, metadata.Select(x => x.Item1.Name));
     }
 }

@@ -1,3 +1,4 @@
+using CsvMagic;
 using CsvMagic.Writing;
 
 namespace CsvMagicTests.Writing;
@@ -15,7 +16,7 @@ public class DateOnlyRenderer : FieldRenderer
     {
     }
 
-    public string Render(object? value)
+    public string Render(CsvOptions options, object? value)
     {
         var dateOnlyValue = value as DateOnly?;
         return dateOnlyValue.HasValue ? dateOnlyValue.Value.ToString(_format) : string.Empty;
