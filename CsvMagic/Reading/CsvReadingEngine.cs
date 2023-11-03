@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Text.RegularExpressions;
 using CsvMagic.Reading.Parsers;
 using CsvMagic.Reflection;
 
@@ -7,16 +6,16 @@ namespace CsvMagic.Reading;
 
 public class CsvReadingEngine<TRow>
 {
-    private readonly Func<TRow> _rowFactory;
+    private readonly Func<TRow> rowFactory;
     private static readonly FieldParser DefaultParser = new DefaultParser();
-    private readonly IReadOnlyList<(PropertyInfo, FieldParser)> _metadata;
-    private readonly CsvRow _csvRowAttr;
+    private readonly IReadOnlyList<(PropertyInfo, FieldParser)> metadata;
+    private readonly CsvOptions options;
 
     internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, Func<TRow> rowFactory)
     {
-        _rowFactory = rowFactory;
-        _metadata = InitParsers(parsers);
-        _csvRowAttr = AttributeHelper.GetCsvRowAttribute(typeof(TRow)) ??
+        this.rowFactory = rowFactory;
+        metadata = InitParsers(parsers);
+        options = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options ??
                       throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
     }
 
@@ -34,7 +33,7 @@ public class CsvReadingEngine<TRow>
 
     public async IAsyncEnumerable<TRow> Read(StreamReader reader, bool? handleHeadersRow = null)
     {
-        var hasHeader = handleHeadersRow.HasValue ? handleHeadersRow.Value : _csvRowAttr.HandleHeaderRow;
+        var hasHeader = handleHeadersRow.HasValue ? handleHeadersRow.Value : options.HandleHeaderRow;
         if (hasHeader)
         {
             await reader.ReadLineAsync();
@@ -45,22 +44,20 @@ public class CsvReadingEngine<TRow>
             var line = await reader.ReadLineAsync();
             var fields = GetLineFields(line);
             using var fieldsEnumerator = fields.GetEnumerator();
-            var row = _rowFactory();
+            var row = rowFactory();
 
-            foreach (var (info, parser) in _metadata)
+            foreach (var (info, parser) in metadata)
             {
                 if (fieldsEnumerator.MoveNext())
                 {
                     var text = fieldsEnumerator.Current;
-                    info.SetValue(row, parser.Parse(text));
+                    info.SetValue(row, parser.Parse(options, text));
                 }
             }
 
             yield return row;
         }
     }
-
-    private const char DoubleQuote = '"'; // TODO duplicated
 
     private IEnumerable<string> GetLineFields(string? line)
     {
@@ -80,9 +77,9 @@ public class CsvReadingEngine<TRow>
             return (string.Empty, null);
         }
 
-        if (text[0] != DoubleQuote)
+        if (text[0] != options.Quoting)
         {
-            var firstDelimiter = text.IndexOf(_csvRowAttr.Delimiter);
+            var firstDelimiter = text.IndexOf(options.Delimiter);
             var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
                 : firstDelimiter < 0 ? text : string.Empty;
 
@@ -95,7 +92,7 @@ public class CsvReadingEngine<TRow>
         bool go = true;
         while (nextIndex < text.Length && go)
         {
-            if (text[nextIndex] == _csvRowAttr.Delimiter && qoutesInARow > 0)
+            if (text[nextIndex] == options.Delimiter && qoutesInARow > 0)
             {
                 if (qoutesInARow % 2 == 1)
                 {
@@ -107,7 +104,7 @@ public class CsvReadingEngine<TRow>
                     nextIndex++;
                 }
             }
-            else if (text[nextIndex] == DoubleQuote)
+            else if (text[nextIndex] == options.Quoting)
             {
                 qoutesInARow++;
                 nextIndex++;
@@ -120,12 +117,12 @@ public class CsvReadingEngine<TRow>
 
         return nextIndex <= text.Length - 1
             ? (Sanitize(text.Substring(1, nextIndex - 2)), text.Substring(nextIndex + 1))
-            : (Sanitize(text.Substring(1, text.Length - 2)), text.Last() == _csvRowAttr.Delimiter ? string.Empty : null);
+            : (Sanitize(text.Substring(1, text.Length - 2)), text.Last() == options.Delimiter ? string.Empty : null);
     }
 
     private string Sanitize(string text)
     {
-        return text.Replace($"{DoubleQuote}{DoubleQuote}", $"{DoubleQuote}");
+        return text.Replace($"{options.Quoting}{options.Quoting}", $"{options.Quoting}");
     }
 
     private FieldParser? GetParserFor(PropertyInfo p)
