@@ -46,13 +46,7 @@ public class CsvWritingEngine<TRow>
 
     private string BuildDataRow(TRow row)
     {
-        return string.Join(options.Delimiter, metadata.Select(x => Sanitize(x.Item2.Render(options, x.Item1.GetValue(row)))));
-    }
-
-    private string Sanitize(string text)
-    {
-        var escaped = text.Replace($"{options.Quoting}", $"{options.Quoting}{options.Quoting}");
-        return (text.Contains(options.Delimiter) || text.Contains('"')) ? $"{options.Quoting}{escaped}{options.Quoting}" : escaped;
+        return string.Join(options.Delimiter, metadata.Select(x => x.Item2.Render(options, x.Item1.GetValue(row))));
     }
 
     private FieldRenderer? GetSerializerFor(PropertyInfo p)

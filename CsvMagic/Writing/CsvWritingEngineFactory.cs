@@ -1,8 +1,13 @@
+using CsvMagic.Writing.Renderers;
+
 namespace CsvMagic.Writing;
 
 public class CsvWritingEngineFactory
 {
-    private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>();
+    private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>
+    {
+        { typeof(string), new DefaultStringRenderer() },
+    };
 
     public CsvWritingEngineFactory AddSerializer<TField>(FieldRenderer renderer)
     {
