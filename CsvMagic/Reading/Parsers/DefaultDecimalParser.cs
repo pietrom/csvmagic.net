@@ -1,9 +1,9 @@
 namespace CsvMagic.Reading.Parsers;
 
-public class DefaultDecimalParser : FieldParser
+public class DefaultDecimalParser : SimpleParser<decimal>
 {
-    public object? Parse(CsvOptions options, string? text)
+    protected override decimal ParseValue(string value)
     {
-        return text == null ? null : decimal.Parse(text);
+        return decimal.Parse(value);
     }
 }

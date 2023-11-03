@@ -33,7 +33,7 @@ public class CsvReadingEngine<TRow>
 
     public async IAsyncEnumerable<TRow> Read(StreamReader reader, bool? handleHeadersRow = null)
     {
-        var hasHeader = handleHeadersRow.HasValue ? handleHeadersRow.Value : options.HandleHeaderRow;
+        var hasHeader = handleHeadersRow ?? options.HandleHeaderRow;
         if (hasHeader)
         {
             await reader.ReadLineAsync();
@@ -42,87 +42,17 @@ public class CsvReadingEngine<TRow>
         while (!reader.EndOfStream)
         {
             var line = await reader.ReadLineAsync();
-            var fields = GetLineFields(line);
-            using var fieldsEnumerator = fields.GetEnumerator();
             var row = rowFactory();
+            var rest = line;
 
             foreach (var (info, parser) in metadata)
             {
-                if (fieldsEnumerator.MoveNext())
-                {
-                    var text = fieldsEnumerator.Current;
-                    info.SetValue(row, parser.Parse(options, text));
-                }
+                (var value, rest) = parser.ParseNext(options, rest);
+                info.SetValue(row, value);
             }
 
             yield return row;
         }
-    }
-
-    private IEnumerable<string> GetLineFields(string? line)
-    {
-        string? rest = line ?? string.Empty;
-        while (rest != null)
-        {
-            var (n, r) = GetNextAndRest(rest);
-            rest = r;
-            yield return n;
-        }
-    }
-
-    private (string, string?) GetNextAndRest(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return (string.Empty, null);
-        }
-
-        if (text[0] != options.Quoting)
-        {
-            var firstDelimiter = text.IndexOf(options.Delimiter);
-            var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
-                : firstDelimiter < 0 ? text : string.Empty;
-
-            var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
-            return (next, rest);
-        }
-
-        var nextIndex = 1;
-        var qoutesInARow = 0;
-        bool go = true;
-        while (nextIndex < text.Length && go)
-        {
-            if (text[nextIndex] == options.Delimiter && qoutesInARow > 0)
-            {
-                if (qoutesInARow % 2 == 1)
-                {
-                    go = false;
-                }
-                else
-                {
-                    qoutesInARow = 0;
-                    nextIndex++;
-                }
-            }
-            else if (text[nextIndex] == options.Quoting)
-            {
-                qoutesInARow++;
-                nextIndex++;
-            }
-            else
-            {
-                nextIndex++;
-            }
-        }
-
-        return nextIndex <= text.Length - 1
-            ? (Sanitize(text.Substring(1, nextIndex - 2)), text.Substring(nextIndex + 1))
-            : (Sanitize(text.Substring(1, text.Length - 2)), text.Last() == options.Delimiter ? string.Empty : null);
-    }
-
-    private string Sanitize(string text)
-    {
-        return text.Replace($"{options.Quoting}{options.Quoting}", $"{options.Quoting}");
     }
 
     private FieldParser? GetParserFor(PropertyInfo p)

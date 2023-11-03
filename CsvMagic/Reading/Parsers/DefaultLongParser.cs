@@ -1,9 +1,9 @@
 namespace CsvMagic.Reading.Parsers;
 
-public class DefaultLongParser : FieldParser
+public class DefaultLongParser : SimpleParser<long>
 {
-    public object? Parse(CsvOptions options, string? text)
+    protected override long ParseValue(string value)
     {
-        return text == null ? null : long.Parse(text);
+        return long.Parse(value);
     }
 }

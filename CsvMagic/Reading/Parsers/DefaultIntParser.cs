@@ -1,9 +1,9 @@
 namespace CsvMagic.Reading.Parsers;
 
-public class DefaultIntParser : FieldParser
+public class DefaultIntParser : SimpleParser<int>
 {
-    public object? Parse(CsvOptions options, string? text)
+    protected override int ParseValue(string value)
     {
-        return text == null ? null : int.Parse(text);
+        return int.Parse(value);
     }
 }

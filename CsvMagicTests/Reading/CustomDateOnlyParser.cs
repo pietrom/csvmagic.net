@@ -1,12 +1,13 @@
 using CsvMagic;
 using CsvMagic.Reading;
+using CsvMagic.Reading.Parsers;
 
 namespace CsvMagicTests.Reading;
 
-public class CustomDateOnlyParser : FieldParser
+public class CustomDateOnlyParser : SimpleParser<DateOnly>
 {
-    public object? Parse(CsvOptions options, string? text)
+    protected override DateOnly ParseValue(string value)
     {
-        return string.IsNullOrEmpty(text) ? null : DateOnly.ParseExact(text, "yyyyMMdd");
+        return DateOnly.ParseExact(value, "yyyyMMdd");
     }
 }

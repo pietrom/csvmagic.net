@@ -1,9 +1,9 @@
 namespace CsvMagic.Reading.Parsers;
 
-public class DefaultDateOnlyParser : FieldParser
+public class DefaultDateOnlyParser : SimpleParser<DateOnly>
 {
-    public object? Parse(CsvOptions options, string? text)
+    protected override DateOnly ParseValue(string value)
     {
-        return string.IsNullOrEmpty(text) ? null : DateOnly.ParseExact(text, "yyyy-MM-dd");
+        return DateOnly.ParseExact(value, "yyyy-MM-dd");
     }
 }
