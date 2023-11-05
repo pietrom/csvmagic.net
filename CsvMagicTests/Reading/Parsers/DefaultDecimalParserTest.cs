@@ -4,7 +4,7 @@ using CsvMagic.Reading.Parsers;
 namespace CsvMagicTests.Reading.Parsers;
 
 [TestFixture]
-public class DefualtDecimalParserTest
+public class DefaultDecimalParserTest
 {
     private readonly DefaultDecimalParser parser = new DefaultDecimalParser();
 
