@@ -11,6 +11,8 @@ public class CsvWritingEngineFactory
         { typeof(decimal?), new DefaultDecimalRenderer()},
         { typeof(DateOnly), new DefaultDateOnlyRenderer()},
         { typeof(DateOnly?), new DefaultDateOnlyRenderer()},
+        { typeof(DateTimeOffset), new DefaultDateTimeOffsetRenderer()},
+        { typeof(DateTimeOffset?), new DefaultDateTimeOffsetRenderer()},
     };
 
     public CsvWritingEngineFactory AddSerializer<TField>(FieldRenderer renderer)
