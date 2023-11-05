@@ -7,6 +7,17 @@
         <Version>1.0.0-temp</Version>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <AssemblyTitle>CsvMagic</AssemblyTitle>
+        <Description>A library to read and write CSV files.</Description>
+        <PackageTags>.net;csv</PackageTags>
+        <Authors>pietrom</Authors>
+        <RepositoryUrl>https://gitlab.com/darwinsw/csvmagic.net/tree/master</RepositoryUrl>
+        <PackageLicenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</PackageLicenseUrl>
+        <PackageProjectUrl>https://gitlab.com/darwinsw/csvmagic.net</PackageProjectUrl>
+        <Copyright>Copyleft 2023 pietrom</Copyright>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
