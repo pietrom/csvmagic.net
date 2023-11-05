@@ -11,8 +11,8 @@ public abstract class SimpleParser<T> : FieldParser
 
         var index = text.IndexOf(options.Delimiter);
         var value = index < 0 ? text : text.Substring(0, index);
-        return (ParseValue(value), text.Substring(index + 1));
+        return (ParseValue(options, value), text.Substring(index + 1));
     }
 
-    protected abstract T ParseValue(string value);
+    protected abstract T ParseValue(CsvOptions options, string value);
 }

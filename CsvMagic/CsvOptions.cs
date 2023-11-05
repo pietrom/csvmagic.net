@@ -1,3 +1,3 @@
 namespace CsvMagic;
 
-public record CsvOptions(char Delimiter, char Quoting, bool HandleHeaderRow);
+public record CsvOptions(char Delimiter, char Quoting, char DecimalSeparator, bool HandleHeaderRow);

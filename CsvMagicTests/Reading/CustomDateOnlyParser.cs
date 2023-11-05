@@ -6,7 +6,7 @@ namespace CsvMagicTests.Reading;
 
 public class CustomDateOnlyParser : SimpleParser<DateOnly>
 {
-    protected override DateOnly ParseValue(string value)
+    protected override DateOnly ParseValue(CsvOptions options, string value)
     {
         return DateOnly.ParseExact(value, "yyyyMMdd");
     }
