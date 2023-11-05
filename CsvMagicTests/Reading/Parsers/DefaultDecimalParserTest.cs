@@ -23,4 +23,11 @@ public class DefaultDecimalParserTest
         var parsed = parser.ParseNext(new CsvOptions(';', '"', ',', false), text);
         Assert.That(parsed.Item1, Is.EqualTo(value));
     }
+
+    [TestCase("\"1234,56\"", 1234.56)]
+    public void ParseCustomWithQuotingNeeded(string text, decimal value)
+    {
+        var parsed = parser.ParseNext(new CsvOptions(',', '"', ',', false), text);
+        Assert.That(parsed.Item1, Is.EqualTo(value));
+    }
 }

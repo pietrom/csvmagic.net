@@ -2,7 +2,7 @@ namespace CsvMagic.Reading.Parsers;
 
 public abstract class QuotingParser<T> : FieldParser
 {
-    protected abstract T ParseValue(string? value);
+    protected abstract T ParseValue(CsvOptions options, string? value);
 
     public (object?, string?) ParseNext(CsvOptions options, string? text)
     {
@@ -13,7 +13,7 @@ public abstract class QuotingParser<T> : FieldParser
     {
         if (string.IsNullOrEmpty(text))
         {
-            return (ParseValue(text), null);
+            return (ParseValue(options, text), null);
         }
 
         if (text[0] != options.Quoting)
@@ -23,7 +23,7 @@ public abstract class QuotingParser<T> : FieldParser
                 : firstDelimiter < 0 ? text : string.Empty;
 
             var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
-            return (ParseValue(next), rest);
+            return (ParseValue(options, next), rest);
         }
 
         var nextIndex = 1;
@@ -55,8 +55,8 @@ public abstract class QuotingParser<T> : FieldParser
         }
 
         return nextIndex <= text.Length - 1
-            ? (ParseValue(Sanitize(options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
-            : (ParseValue(Sanitize(options, text.Substring(1, text.Length - 2))), text.Last() == options.Delimiter ? string.Empty : null);
+            ? (ParseValue(options, Sanitize(options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
+            : (ParseValue(options, Sanitize(options, text.Substring(1, text.Length - 2))), text.Last() == options.Delimiter ? string.Empty : null);
     }
 
     private string Sanitize(CsvOptions options, string text)
