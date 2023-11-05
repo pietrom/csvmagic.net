@@ -7,11 +7,15 @@ public class CsvWritingEngineFactory
     private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>
     {
         { typeof(string), new DefaultStringRenderer() },
+        { typeof(decimal), new DefaultDecimalRenderer()},
+        { typeof(decimal?), new DefaultDecimalRenderer()},
+        { typeof(DateOnly), new DefaultDateOnlyRenderer()},
+        { typeof(DateOnly?), new DefaultDateOnlyRenderer()},
     };
 
     public CsvWritingEngineFactory AddSerializer<TField>(FieldRenderer renderer)
     {
-        _defaultRenderers.Add(typeof(TField), renderer);
+        _defaultRenderers[typeof(TField)] = renderer;
         return this;
     }
 

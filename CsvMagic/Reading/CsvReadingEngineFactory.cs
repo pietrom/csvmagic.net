@@ -19,7 +19,7 @@ public class CsvReadingEngineFactory
 
     public CsvReadingEngineFactory AddSerializer<TField>(FieldParser parser)
     {
-        _defaultParsers.Add(typeof(TField), parser);
+        _defaultParsers[typeof(TField)] = parser;
         return this;
     }
 
