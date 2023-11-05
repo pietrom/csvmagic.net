@@ -15,6 +15,8 @@ public class CsvReadingEngineFactory
         { typeof(decimal?), new DefaultDecimalParser()},
         { typeof(DateOnly), new DefaultDateOnlyParser()},
         { typeof(DateOnly?), new DefaultDateOnlyParser()},
+        { typeof(DateTimeOffset), new DefaultDateTimeOffsetParser()},
+        { typeof(DateTimeOffset?), new DefaultDateTimeOffsetParser()},
     };
 
     public CsvReadingEngineFactory AddSerializer<TField>(FieldParser parser)
