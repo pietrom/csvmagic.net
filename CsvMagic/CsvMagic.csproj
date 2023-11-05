@@ -12,7 +12,7 @@
         <Description>A library to read and write CSV files.</Description>
         <PackageTags>.net;csv</PackageTags>
         <Authors>pietrom</Authors>
-        <RepositoryUrl>https://gitlab.com/darwinsw/csvmagic.net/tree/master</RepositoryUrl>
+        <RepositoryUrl>https://gitlab.com/darwinsw/csvmagic.net/tree/main</RepositoryUrl>
         <PackageLicenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</PackageLicenseUrl>
         <PackageProjectUrl>https://gitlab.com/darwinsw/csvmagic.net</PackageProjectUrl>
         <Copyright>Copyleft 2023 pietrom</Copyright>
