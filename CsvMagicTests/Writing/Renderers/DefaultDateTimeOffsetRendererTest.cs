@@ -19,4 +19,11 @@ public class DefaultDateTimeOffsetRendererTest
     {
         Assert.That(renderer.Render(new CsvRow().Options, new DateTimeOffset(2023, 11, 5, 13, 24, 43, 123, TimeSpan.FromHours(-3))), Is.EqualTo("2023-11-05T13:24:43.1230000-03:00"));
     }
+
+
+    [Test]
+    public void RenderValueToIso8601StringWithQuotingNeeded()
+    {
+        Assert.That(renderer.Render(new CsvOptions('-', '"', '.', false), new DateTimeOffset(2023, 11, 5, 13, 24, 43, 123, TimeSpan.FromHours(-3))), Is.EqualTo("\"2023-11-05T13:24:43.1230000-03:00\""));
+    }
 }

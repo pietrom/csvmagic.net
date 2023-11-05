@@ -1,10 +1,9 @@
 namespace CsvMagic.Writing.Renderers;
 
-public class DefaultDateTimeOffsetRenderer : FieldRenderer
+public class DefaultDateTimeOffsetRenderer : QuotableFieldRenderer<DateTimeOffset?>
 {
-    public string Render(CsvOptions options, object? value)
+    protected override string RenderValue(CsvOptions options, DateTimeOffset? value)
     {
-        var dateOnly = value as DateTimeOffset?;
-        return dateOnly.HasValue ? dateOnly.Value.ToString("O") : string.Empty;
+        return value.HasValue ? value.Value.ToString("O") : string.Empty;
     }
 }

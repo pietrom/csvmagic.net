@@ -25,4 +25,12 @@ public class DefaultDecimalRendererTest
         var result = renderer.Render(new CsvOptions(';', '"', ',', false), input);
         Assert.That(result, Is.EqualTo(output));
     }
+
+
+    [TestCase(1234.56, "\"1234,56\"")]
+    public void RenderCustomWithQuotingNeeded(decimal? input, string output)
+    {
+        var result = renderer.Render(new CsvOptions(',', '"', ',', false), input);
+        Assert.That(result, Is.EqualTo(output));
+    }
 }

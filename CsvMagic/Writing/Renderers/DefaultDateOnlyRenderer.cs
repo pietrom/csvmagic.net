@@ -1,10 +1,9 @@
 namespace CsvMagic.Writing.Renderers;
 
-public class DefaultDateOnlyRenderer : FieldRenderer
+public class DefaultDateOnlyRenderer : QuotableFieldRenderer<DateOnly?>
 {
-    public string Render(CsvOptions options, object? value)
+    protected override string RenderValue(CsvOptions options, DateOnly? value)
     {
-        var dateOnly = value as DateOnly?;
-        return dateOnly.HasValue ? dateOnly.Value.ToString("yyyy-MM-dd") : string.Empty;
+        return value.HasValue ? value.Value.ToString("yyyy-MM-dd") : string.Empty;
     }
 }
