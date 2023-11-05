@@ -20,6 +20,7 @@ public class CsvWritingEngine<TRow>
         IReadOnlyDictionary<Type, FieldRenderer> serializers)
     {
         return ReflectionHelper.GetTypeProperties(typeof(TRow))
+            .Where(p => p.CanRead)
             .Select(
                 p => (p, GetSerializerFor(p) ?? (serializers.ContainsKey(p.PropertyType)
                             ? serializers[p.PropertyType]
@@ -28,9 +29,10 @@ public class CsvWritingEngine<TRow>
             ).ToList();
     }
 
-    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer)
+    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, bool? handleHeadersRow = null)
     {
-        if (options.HandleHeaderRow)
+        var hasHeader = handleHeadersRow ?? options.HandleHeaderRow;
+        if (hasHeader)
         {
             var headers = BuildHeadersRow(options.Delimiter);
             await writer.WriteLineAsync(headers);
