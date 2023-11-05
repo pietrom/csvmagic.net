@@ -1,9 +1,8 @@
 using System.Text;
-using CsvMagic.Writing;
 
-namespace CsvMagicTests.Writing;
+namespace CsvMagic.Writing;
 
-public static class WritingHelper
+public static class CsvWritingEngineExtension
 {
     public static async Task<string> Write<T>(this CsvWritingEngine<T> engine, IList<T> items)
     {

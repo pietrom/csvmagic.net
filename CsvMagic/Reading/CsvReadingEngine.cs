@@ -23,6 +23,7 @@ public class CsvReadingEngine<TRow>
         IReadOnlyDictionary<Type, FieldParser> parsers)
     {
         return ReflectionHelper.GetTypeProperties(typeof(TRow))
+            .Where(p => p.CanWrite)
             .Select(
                 p => (p, GetParserFor(p) ?? (parsers.ContainsKey(p.PropertyType)
                             ? parsers[p.PropertyType]
