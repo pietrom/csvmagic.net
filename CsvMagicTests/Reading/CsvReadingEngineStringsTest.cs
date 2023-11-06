@@ -15,9 +15,9 @@ public class CsvReadingEngineStringsTest
         engine = new CsvReadingEngineFactory().Create<CsvTextData>(() => new CsvTextData());
     }
 
-    private async Task<CsvTextData> ReadSingleLIneAsCsv(string input)
+    private async Task<CsvTextData> ReadSingleLineAsCsv(string input)
     {
-        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), false).SingleAsync();
+        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), CsvOptions.Builder().WithoutHeaders().Build()).SingleAsync();
     }
 
     // Simple text
@@ -36,7 +36,7 @@ public class CsvReadingEngineStringsTest
     [TestCase("AA\"A,\"BBB\"", "AA\"A", "BBB")]
     public async Task Read(string input, string text1, string text2)
     {
-        var row = await ReadSingleLIneAsCsv(input);
+        var row = await ReadSingleLineAsCsv(input);
         Assert.That(row, Is.EqualTo(new CsvTextData { Text1 = text1, Text2 = text2 }));
     }
 }

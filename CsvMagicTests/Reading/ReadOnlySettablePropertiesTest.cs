@@ -18,7 +18,7 @@ public class ReadOnlySettablePropertiesTest
     public async Task ShouldNotReadGetterOnlyProperty()
     {
         var engine = new CsvReadingEngineFactory().Create<Row>();
-        var result = (await engine.Read(@"11,19", false)).Single();
+        var result = (await engine.Read(@"11,19", CsvOptions.Builder().WithoutHeaders().Build())).Single();
         Assert.That(result, Is.EqualTo(new Row { X = 11, Y = 19 }));
     }
 }
