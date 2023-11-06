@@ -31,7 +31,7 @@ public class CsvWritingEngine<TRow>
 
     public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions? localOptions = null)
     {
-        var actualOptions = localOptions ?? tagOptions ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
+        var actualOptions = localOptions ?? tagOptions ?? throw new Exception($"Please annotate {typeof(TRow).Name} with [CsvRow] attribute or provide explicit CsvOptions parameter");
         if (actualOptions.HandleHeaderRow)
         {
             var headers = BuildHeadersRow(actualOptions.Delimiter);
