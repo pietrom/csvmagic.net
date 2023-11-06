@@ -8,12 +8,10 @@ public class CsvWritingEngine<TRow>
 {
     private static readonly FieldRenderer DefaultRenderer = new DefaultRenderer();
     private readonly IReadOnlyList<(PropertyInfo, FieldRenderer)> metadata;
-    private readonly CsvOptions? tagOptions;
 
     internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers)
     {
         metadata = InitSerializers(renderers);
-        tagOptions = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options;
     }
 
     private IReadOnlyList<(PropertyInfo, FieldRenderer)> InitSerializers(
@@ -29,18 +27,17 @@ public class CsvWritingEngine<TRow>
             ).ToList();
     }
 
-    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions? localOptions = null)
+    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions options)
     {
-        var actualOptions = localOptions ?? tagOptions ?? throw new Exception($"Please annotate {typeof(TRow).Name} with [CsvRow] attribute or provide explicit CsvOptions parameter");
-        if (actualOptions.HandleHeaderRow)
+        if (options.HandleHeaderRow)
         {
-            var headers = BuildHeadersRow(actualOptions.Delimiter);
+            var headers = BuildHeadersRow(options.Delimiter);
             await writer.WriteLineAsync(headers);
         }
 
         foreach (var row in rows)
         {
-            await writer.WriteLineAsync(BuildDataRow(actualOptions, row));
+            await writer.WriteLineAsync(BuildDataRow(options, row));
         }
 
         await writer.FlushAsync();

@@ -11,13 +11,13 @@ public class DefaultDateOnlyRendererTest
     [Test]
     public void RenderNullValueToEmptyString()
     {
-        Assert.That(renderer.Render(new CsvRow().Options, null), Is.EqualTo(string.Empty));
+        Assert.That(renderer.Render(CsvOptions.Default(), null), Is.EqualTo(string.Empty));
     }
 
     [Test]
     public void RenderValue()
     {
-        Assert.That(renderer.Render(new CsvRow().Options, new DateOnly(2023, 11, 5)), Is.EqualTo("2023-11-05"));
+        Assert.That(renderer.Render(CsvOptions.Default(), new DateOnly(2023, 11, 5)), Is.EqualTo("2023-11-05"));
     }
 
 

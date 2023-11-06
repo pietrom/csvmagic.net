@@ -6,7 +6,6 @@ namespace CsvMagicTests.Writing;
 [TestFixture]
 public class WriteOnlyGettablePropertiesTest
 {
-    [CsvRow]
     class Row
     {
         public string FirstName { get; set; }

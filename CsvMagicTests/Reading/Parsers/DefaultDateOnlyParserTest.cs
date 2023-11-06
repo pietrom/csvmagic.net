@@ -10,14 +10,14 @@ public class DefaultDateOnlyParserTest
     [Test]
     public void ParseEmtpyStringToNull()
     {
-        Assert.That(parser.ParseNext(new CsvRow().Options, "").Item1, Is.Null);
+        Assert.That(parser.ParseNext(CsvOptions.Default(), "").Item1, Is.Null);
     }
 
 
     [Test]
     public void ParseIso8601StringProperly()
     {
-        Assert.That(parser.ParseNext(new CsvRow().Options, "2023-11-05").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
+        Assert.That(parser.ParseNext(CsvOptions.Default(), "2023-11-05").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
     }
 
 

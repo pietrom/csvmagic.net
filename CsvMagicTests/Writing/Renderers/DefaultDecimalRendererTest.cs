@@ -13,7 +13,7 @@ public class DefaultDecimalRendererTest
     [TestCase(1234.56, "1234.56")]
     public void RenderUsingDefaulta(decimal? input, string output)
     {
-        var result = renderer.Render(new CsvRow().Options, input);
+        var result = renderer.Render(CsvOptions.Default(), input);
         Assert.That(result, Is.EqualTo(output));
     }
 

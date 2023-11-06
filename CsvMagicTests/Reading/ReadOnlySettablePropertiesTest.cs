@@ -6,7 +6,6 @@ namespace CsvMagicTests.Reading;
 [TestFixture]
 public class ReadOnlySettablePropertiesTest
 {
-    [CsvRow]
     record Row
     {
         public int X { get; set; }

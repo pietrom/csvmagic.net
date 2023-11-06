@@ -2,7 +2,6 @@ using CsvMagic;
 
 namespace CsvMagicTests.Writing;
 
-[CsvRow(Delimiter = ';')]
 public record CsvWriteData : Data
 {
     public string? StringValue { get; set; }

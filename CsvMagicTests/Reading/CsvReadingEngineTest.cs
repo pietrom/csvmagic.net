@@ -15,9 +15,9 @@ public class CsvReadingEngineTest
         engine = new CsvReadingEngineFactory().Create<CsvReadData>(() => new CsvReadData());
     }
 
-    private async Task<List<CsvReadData>> ReadAsCsv(string input, CsvOptions? options  = null)
+    private async Task<List<CsvReadData>> ReadAsCsv(string input, CsvOptions? options = null)
     {
-        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), options)
+        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), options ?? CsvOptions.Default())
             .ToListAsync();
     }
 

@@ -9,13 +9,11 @@ public class CsvReadingEngine<TRow>
     private readonly Func<TRow> rowFactory;
     private static readonly FieldParser DefaultParser = new DefaultParser();
     private readonly IReadOnlyList<(PropertyInfo, FieldParser)> metadata;
-    private readonly CsvOptions? options;
 
     internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, Func<TRow> rowFactory)
     {
         this.rowFactory = rowFactory;
         metadata = InitParsers(parsers);
-        options = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options;
     }
 
     private IReadOnlyList<(PropertyInfo, FieldParser)> InitParsers(
@@ -31,10 +29,9 @@ public class CsvReadingEngine<TRow>
             ).ToList();
     }
 
-    public async IAsyncEnumerable<TRow> Read(StreamReader reader, CsvOptions? localOptions = null)
+    public async IAsyncEnumerable<TRow> Read(StreamReader reader, CsvOptions options)
     {
-        var actualOptions = localOptions ?? options ?? throw new Exception($"Please annotate {typeof(TRow).Name} with [CsvRow] attribute or provide explicit CsvOptions parameter");
-        if (actualOptions.HandleHeaderRow)
+        if (options.HandleHeaderRow)
         {
             await reader.ReadLineAsync();
         }
@@ -47,7 +44,7 @@ public class CsvReadingEngine<TRow>
 
             foreach (var (info, parser) in metadata)
             {
-                (var value, rest) = parser.ParseNext(actualOptions, rest);
+                (var value, rest) = parser.ParseNext(options, rest);
                 info.SetValue(row, value);
             }
 

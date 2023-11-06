@@ -41,7 +41,6 @@ public class CsvReadingEngineStringsTest
     }
 }
 
-[CsvRow]
 public record CsvTextData
 {
     public string Text1 { get; set; }

@@ -2,7 +2,6 @@ using CsvMagic;
 
 namespace CsvMagicTests.Reading;
 
-[CsvRow]
 public record CsvReadData : Data
 {
     public string? StringValue { get; set; }

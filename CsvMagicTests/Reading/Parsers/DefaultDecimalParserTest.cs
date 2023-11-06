@@ -12,7 +12,7 @@ public class DefaultDecimalParserTest
     [TestCase("1234.56", 1234.56)]
     public void ParseUsingDefaults(string text, decimal value)
     {
-        var parsed = parser.ParseNext(new CsvRow().Options, text);
+        var parsed = parser.ParseNext(CsvOptions.Default(), text);
         Assert.That(parsed.Item1, Is.EqualTo(value));
     }
 
