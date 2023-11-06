@@ -8,12 +8,12 @@ public class CsvWritingEngine<TRow>
 {
     private static readonly FieldRenderer DefaultRenderer = new DefaultRenderer();
     private readonly IReadOnlyList<(PropertyInfo, FieldRenderer)> metadata;
-    private readonly CsvOptions options;
+    private readonly CsvOptions? tagOptions;
 
     internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers)
     {
         metadata = InitSerializers(renderers);
-        options = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
+        tagOptions = AttributeHelper.GetCsvRowAttribute(typeof(TRow))?.Options;
     }
 
     private IReadOnlyList<(PropertyInfo, FieldRenderer)> InitSerializers(
@@ -29,24 +29,24 @@ public class CsvWritingEngine<TRow>
             ).ToList();
     }
 
-    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, bool? handleHeadersRow = null)
+    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions? localOptions = null)
     {
-        var hasHeader = handleHeadersRow ?? options.HandleHeaderRow;
-        if (hasHeader)
+        var actualOptions = localOptions ?? tagOptions ?? throw new System.Exception($"{typeof(TRow).Name} should be annotated with [CsvRow] attribute");
+        if (actualOptions.HandleHeaderRow)
         {
-            var headers = BuildHeadersRow(options.Delimiter);
+            var headers = BuildHeadersRow(actualOptions.Delimiter);
             await writer.WriteLineAsync(headers);
         }
 
         foreach (var row in rows)
         {
-            await writer.WriteLineAsync(BuildDataRow(row));
+            await writer.WriteLineAsync(BuildDataRow(actualOptions, row));
         }
 
         await writer.FlushAsync();
     }
 
-    private string BuildDataRow(TRow row)
+    private string BuildDataRow(CsvOptions options, TRow row)
     {
         return string.Join(options.Delimiter, metadata.Select(x => x.Item2.Render(options, x.Item1.GetValue(row))));
     }
