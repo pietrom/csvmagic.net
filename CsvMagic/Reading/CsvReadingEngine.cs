@@ -10,7 +10,7 @@ public class CsvReadingEngine<TRow> where TRow : new()
     internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers)
     {
         this.parsers = parsers;
-        rootParser = new ComplexTypeParserNew<TRow>();
+        rootParser = new ComplexTypeParser<TRow>();
     }
 
     public async IAsyncEnumerable<TRow> Read(StreamReader reader, CsvOptions options)

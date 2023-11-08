@@ -3,7 +3,7 @@ using CsvMagic.Reflection;
 
 namespace CsvMagic.Reading.Parsers;
 
-public class ComplexTypeParserNew<TRow> : FieldParser where TRow : new()
+public class ComplexTypeParser<TRow> : FieldParser where TRow : new()
 {
     private IReadOnlyList<(PropertyInfo, FieldParser)>? metadata;
 

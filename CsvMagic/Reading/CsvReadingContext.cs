@@ -30,7 +30,7 @@ public class CsvReadingContext
 
     private static FieldParser GetDefaultParser(Type type)
     {
-        var genericType = typeof(ComplexTypeParserNew<>);
+        var genericType = typeof(ComplexTypeParser<>);
         var notGenericType = genericType.MakeGenericType(new[] { type });
         FieldParser parser = (FieldParser)Activator.CreateInstance(notGenericType);
         return parser;
