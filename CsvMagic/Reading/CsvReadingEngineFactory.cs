@@ -25,7 +25,5 @@ public class CsvReadingEngineFactory
         return this;
     }
 
-    public CsvReadingEngine<TRow> Create<TRow>(Func<TRow> rowFactory) => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), rowFactory);
-
-    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), () => new TRow());
+    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly());
 }

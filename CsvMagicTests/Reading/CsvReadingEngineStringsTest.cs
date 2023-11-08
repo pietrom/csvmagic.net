@@ -12,7 +12,7 @@ public class CsvReadingEngineStringsTest
     [SetUp]
     public void InitEngine()
     {
-        engine = new CsvReadingEngineFactory().Create<CsvTextData>(() => new CsvTextData());
+        engine = new CsvReadingEngineFactory().Create<CsvTextData>();
     }
 
     private async Task<CsvTextData> ReadSingleLineAsCsv(string input)
