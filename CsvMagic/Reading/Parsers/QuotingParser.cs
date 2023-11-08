@@ -2,28 +2,28 @@ namespace CsvMagic.Reading.Parsers;
 
 public abstract class QuotingParser<T> : FieldParser
 {
-    protected abstract T ParseValue(CsvOptions options, string? value);
+    protected abstract T ParseValue(CsvReadingContext context, string? value);
 
-    public (object?, string?) ParseNext(CsvOptions options, string? text)
+    public (object?, string?) ParseNext(CsvReadingContext context, string? text)
     {
-        return GetNextAndRest(options, text);
+        return GetNextAndRest(context, text);
     }
 
-    private (T?, string?) GetNextAndRest(CsvOptions options, string? text)
+    private (T?, string?) GetNextAndRest(CsvReadingContext context, string? text)
     {
         if (string.IsNullOrEmpty(text))
         {
-            return (ParseValue(options, text), null);
+            return (ParseValue(context, text), null);
         }
 
-        if (text[0] != options.Quoting)
+        if (text[0] != context.Options.Quoting)
         {
-            var firstDelimiter = text.IndexOf(options.Delimiter);
+            var firstDelimiter = text.IndexOf(context.Options.Delimiter);
             var next = firstDelimiter > 0 ? text.Substring(0, firstDelimiter)
                 : firstDelimiter < 0 ? text : string.Empty;
 
             var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
-            return (ParseValue(options, next), rest);
+            return (ParseValue(context, next), rest);
         }
 
         var nextIndex = 1;
@@ -31,7 +31,7 @@ public abstract class QuotingParser<T> : FieldParser
         bool go = true;
         while (nextIndex < text.Length && go)
         {
-            if (text[nextIndex] == options.Delimiter && qoutesInARow > 0)
+            if (text[nextIndex] == context.Options.Delimiter && qoutesInARow > 0)
             {
                 if (qoutesInARow % 2 == 1)
                 {
@@ -43,7 +43,7 @@ public abstract class QuotingParser<T> : FieldParser
                     nextIndex++;
                 }
             }
-            else if (text[nextIndex] == options.Quoting)
+            else if (text[nextIndex] == context.Options.Quoting)
             {
                 qoutesInARow++;
                 nextIndex++;
@@ -55,8 +55,8 @@ public abstract class QuotingParser<T> : FieldParser
         }
 
         return nextIndex <= text.Length - 1
-            ? (ParseValue(options, Sanitize(options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
-            : (ParseValue(options, Sanitize(options, text.Substring(1, text.Length - 2))), text.Last() == options.Delimiter ? string.Empty : null);
+            ? (ParseValue(context, Sanitize(context.Options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
+            : (ParseValue(context, Sanitize(context.Options, text.Substring(1, text.Length - 2))), text.Last() == context.Options.Delimiter ? string.Empty : null);
     }
 
     private string Sanitize(CsvOptions options, string text)

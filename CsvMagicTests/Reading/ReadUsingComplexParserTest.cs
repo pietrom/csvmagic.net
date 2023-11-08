@@ -31,7 +31,7 @@ public class ComplexTypeParserTest
 
 class UsernameParser : QuotingParser<Username?>
 {
-    protected override Username? ParseValue(CsvOptions options, string? value)
+    protected override Username? ParseValue(CsvReadingContext context, string? value)
     {
         return string.IsNullOrEmpty(value) ? null : new Username(value);
     }

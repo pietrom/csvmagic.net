@@ -2,12 +2,12 @@ namespace CsvMagic.Reading.Parsers;
 
 public abstract class ComplexTypeParser<T> : FieldParser
 {
-    public (object?, string?) ParseNext(CsvOptions options, string? text)
+    public (object?, string?) ParseNext(CsvReadingContext context, string? text)
     {
         var (parameters, rest) = SubParsers.Aggregate(
             (Parameters: new List<object?>() as IEnumerable<object?>, Text: text), (acc, curr) =>
             {
-                var (o, r) = curr.ParseNext(options, acc.Text);
+                var (o, r) = curr.ParseNext(context, acc.Text);
                 return (acc.Parameters.Append(o), r);
             });
         return (Build(parameters.ToArray()), rest);

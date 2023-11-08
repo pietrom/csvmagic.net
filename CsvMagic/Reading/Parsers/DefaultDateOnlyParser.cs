@@ -2,7 +2,7 @@ namespace CsvMagic.Reading.Parsers;
 
 public class DefaultDateOnlyParser : QuotingParser<DateOnly?>
 {
-    protected override DateOnly? ParseValue(CsvOptions options, string value)
+    protected override DateOnly? ParseValue(CsvReadingContext context, string value)
     {
         if (string.IsNullOrEmpty(value))
         {

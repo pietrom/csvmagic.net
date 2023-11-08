@@ -4,8 +4,8 @@ namespace CsvMagic.Reading.Parsers;
 
 public class DefaultDecimalParser : QuotingParser<decimal>
 {
-    protected override decimal ParseValue(CsvOptions options, string value)
+    protected override decimal ParseValue(CsvReadingContext context, string value)
     {
-        return decimal.Parse(value, new NumberFormatInfo() { NumberDecimalSeparator = options.DecimalSeparator.ToString() });
+        return decimal.Parse(value, new NumberFormatInfo() { NumberDecimalSeparator = context.Options.DecimalSeparator.ToString() });
     }
 }

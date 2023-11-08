@@ -9,7 +9,7 @@ public class DelegateWrapperParser : FieldParser
         _delegate = @delegate;
     }
 
-    public (object?, string?) ParseNext(CsvOptions options, string? text)
+    public (object?, string?) ParseNext(CsvReadingContext context, string? text)
     {
         return text == null ? (null, null) : _delegate(text);
     }

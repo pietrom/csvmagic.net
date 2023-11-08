@@ -6,12 +6,14 @@ namespace CsvMagic.Reading;
 
 public class CsvReadingEngine<TRow>
 {
+    private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly Func<TRow> rowFactory;
     private static readonly FieldParser DefaultParser = new DefaultParser();
     private readonly IReadOnlyList<(PropertyInfo, FieldParser)> metadata;
 
     internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, Func<TRow> rowFactory)
     {
+        this.parsers = parsers;
         this.rowFactory = rowFactory;
         metadata = InitParsers(parsers);
     }
@@ -41,10 +43,11 @@ public class CsvReadingEngine<TRow>
             var line = await reader.ReadLineAsync();
             var row = rowFactory();
             var rest = line;
+            var context = new CsvReadingContext(options, parsers);
 
             foreach (var (info, parser) in metadata)
             {
-                (var value, rest) = parser.ParseNext(options, rest);
+                (var value, rest) = parser.ParseNext(context, rest);
                 info.SetValue(row, value);
             }
 

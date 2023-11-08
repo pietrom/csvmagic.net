@@ -2,7 +2,7 @@ namespace CsvMagic.Reading.Parsers;
 
 public class DefaultStringParser : QuotingParser<string?>
 {
-    protected override string? ParseValue(CsvOptions options, string? value)
+    protected override string? ParseValue(CsvReadingContext context, string? value)
     {
         return value;
     }

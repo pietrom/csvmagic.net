@@ -4,7 +4,7 @@ namespace CsvMagic.Reading.Parsers;
 
 public class DefaultDateTimeOffsetParser : QuotingParser<DateTimeOffset?>
 {
-    protected override DateTimeOffset? ParseValue(CsvOptions options, string? value)
+    protected override DateTimeOffset? ParseValue(CsvReadingContext context, string? value)
     {
         if (string.IsNullOrEmpty(value))
         {
