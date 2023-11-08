@@ -14,7 +14,6 @@ public class ComplexTypeParserTest
     {
         [CsvField(Parser = typeof(UsernameParser))]
         public Username Username { get; set; }
-        [CsvField(Parser = typeof(AddressParser))]
         public Address Address { get; set; }
 
         public int Value { get; set; }
@@ -34,15 +33,5 @@ class UsernameParser : QuotingParser<Username?>
     protected override Username? ParseValue(CsvReadingContext context, string? value)
     {
         return string.IsNullOrEmpty(value) ? null : new Username(value);
-    }
-}
-
-class AddressParser : ComplexTypeParser<Address?>
-{
-    protected override IList<FieldParser> SubParsers => new[] { new DefaultStringParser(), new DefaultStringParser() };
-
-    protected override Address? Build(object?[] parameters)
-    {
-        return new Address(parameters[0] as string, parameters[1] as string);
     }
 }

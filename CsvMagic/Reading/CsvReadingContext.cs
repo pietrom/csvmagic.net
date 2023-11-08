@@ -25,7 +25,15 @@ public class CsvReadingContext
             parser = (FieldParser?)Activator.CreateInstance(fieldAttr.Parser);
         }
 
-        return parser ?? GetParserFor(p.PropertyType) ?? DefaultParser;
+        return parser ?? GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
+    }
+
+    private static FieldParser GetDefaultParser(Type type)
+    {
+        var genericType = typeof(ComplexTypeParserNew<>);
+        var notGenericType = genericType.MakeGenericType(new[] { type });
+        FieldParser parser = (FieldParser)Activator.CreateInstance(notGenericType);
+        return parser;
     }
 
     private FieldParser? GetParserFor(Type t)
