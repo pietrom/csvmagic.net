@@ -41,7 +41,17 @@ public class CsvReadingEngine<TRow> where TRow : new()
                 throw new CsvReadingException(ex, context)
                 {
                     ParserTag = rootParser.GetType().Name,
-                    TokenText = rest
+                    TokenText = rest,
+                };
+            }
+
+            if (!string.IsNullOrEmpty(rest))
+            {
+                throw new CsvReadingException(context)
+                {
+                    ParserTag = nameof(CsvReadingEngine<TRow>),
+                    TokenText = rest,
+                    ErrorDetail = "Rest Not Empty"
                 };
             }
 

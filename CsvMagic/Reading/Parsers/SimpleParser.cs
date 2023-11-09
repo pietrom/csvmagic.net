@@ -11,7 +11,7 @@ public abstract class SimpleParser<T> : FieldParser
 
         var index = text.IndexOf(context.Options.Delimiter);
         var value = index < 0 ? text : text.Substring(0, index);
-        return (SafeParseValue(context, value), text.Substring(index + 1));
+        return (SafeParseValue(context, value), index < 0 ? null :text.Substring(index + 1));
     }
 
     protected abstract T ParseValue(CsvReadingContext context, string value);

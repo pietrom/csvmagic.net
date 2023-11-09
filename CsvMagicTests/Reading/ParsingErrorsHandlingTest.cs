@@ -18,7 +18,8 @@ public class ParsingErrorsHandlingTest
     {
         return Read<Row>(@"Text,Value
 A,1
-B,2,C,33333
+B,2,
+C,33333
 ");
     }
 
@@ -68,6 +69,36 @@ C,33xx333
 D,8765
 "));
         Assert.That(ex.ParserTag, Is.EqualTo(nameof(DefaultIntParser)));
+    }
+
+    [Test]
+    public void ShouldTrackMissingField()
+    {
+        var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
+A,1
+B
+C,33
+D,8765
+"));
+        Assert.That(ex.LineNumber, Is.EqualTo(2));
+        Assert.That(ex.LineText, Is.EqualTo("B"));
+        Assert.That(ex.ParserTag, Is.EqualTo(nameof(ComplexTypeParser<Row>)));
+        Assert.That(ex.ErrorDetail, Is.EqualTo("Less Tokens Than Properties"));
+    }
+
+    [Test]
+    public void ShouldTrackRestNotEmpty()
+    {
+        var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
+A,1
+B,11,AA,22
+C,33
+D,8765
+"));
+        Assert.That(ex.LineNumber, Is.EqualTo(2));
+        Assert.That(ex.LineText, Is.EqualTo("B,11,AA,22"));
+        Assert.That(ex.ParserTag, Is.EqualTo( nameof(CsvReadingEngine<Row>)));
+        Assert.That(ex.ErrorDetail, Is.EqualTo("Rest Not Empty"));
     }
 
     [Test]

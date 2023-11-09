@@ -15,6 +15,16 @@ public class ComplexTypeParser<TRow> : FieldParser where TRow : new()
         var rest = text;
         foreach (var (info, parser) in metadata)
         {
+            if (rest == null)
+            {
+                throw new CsvReadingException(context)
+                {
+                    ParserTag = nameof(ComplexTypeParser<TRow>),
+                    TokenText = rest,
+                    ErrorDetail = "Less Tokens Than Properties"
+                };
+            }
+
             (var value, rest) = parser.ParseNext(context, rest);
             info.SetValue(row, value);
         }
