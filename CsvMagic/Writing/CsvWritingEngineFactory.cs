@@ -7,6 +7,10 @@ public class CsvWritingEngineFactory
     private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>
     {
         { typeof(string), new DefaultStringRenderer() },
+        { typeof(int), new DefaultIntRenderer() },
+        { typeof(int?), new DefaultIntRenderer() },
+        { typeof(long), new DefaultLongRenderer() },
+        { typeof(long?), new DefaultLongRenderer() },
         { typeof(decimal), new DefaultDecimalRenderer()},
         { typeof(decimal?), new DefaultDecimalRenderer()},
         { typeof(DateOnly), new DefaultDateOnlyRenderer()},

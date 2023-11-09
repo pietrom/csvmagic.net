@@ -4,8 +4,8 @@ namespace CsvMagic.Writing.Renderers;
 
 public class DefaultDecimalRenderer : QuotableFieldRenderer<decimal?>
 {
-    protected override string RenderValue(CsvOptions options, decimal? value)
+    protected override string RenderValue(CsvWritingContext context, decimal? value)
     {
-        return value.HasValue ? value.Value.ToString(new NumberFormatInfo() { NumberDecimalSeparator = options.DecimalSeparator.ToString() }) : string.Empty;
+        return value.HasValue ? value.Value.ToString(new NumberFormatInfo() { NumberDecimalSeparator = context.Options.DecimalSeparator.ToString() }) : string.Empty;
     }
 }

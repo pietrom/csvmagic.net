@@ -13,7 +13,7 @@ public class CsvReadingEngine<TRow> where TRow : new()
         rootParser = new ComplexTypeParser<TRow>();
     }
 
-    public async IAsyncEnumerable<TRow> Read(StreamReader reader, CsvOptions options)
+    public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader)
     {
         if (options.HandleHeaderRow)
         {

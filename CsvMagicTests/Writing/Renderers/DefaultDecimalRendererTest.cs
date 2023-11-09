@@ -1,5 +1,6 @@
 using CsvMagic;
 using CsvMagic.Writing.Renderers;
+using static CsvMagicTests.Writing.CsvWritingContextHelper;
 
 namespace CsvMagicTests.Writing.Renderers;
 
@@ -13,7 +14,7 @@ public class DefaultDecimalRendererTest
     [TestCase(1234.56, "1234.56")]
     public void RenderUsingDefaulta(decimal? input, string output)
     {
-        var result = renderer.Render(CsvOptions.Default(), input);
+        var result = renderer.RenderObject(ContextFrom(CsvOptions.Default()), input);
         Assert.That(result, Is.EqualTo(output));
     }
 
@@ -22,7 +23,7 @@ public class DefaultDecimalRendererTest
     [TestCase(1234.56, "1234,56")]
     public void RenderCustom(decimal? input, string output)
     {
-        var result = renderer.Render(new CsvOptions(';', '"', ',', false), input);
+        var result = renderer.RenderObject(ContextFrom(new CsvOptions(';', '"', ',', false)), input);
         Assert.That(result, Is.EqualTo(output));
     }
 
@@ -30,7 +31,7 @@ public class DefaultDecimalRendererTest
     [TestCase(1234.56, "\"1234,56\"")]
     public void RenderCustomWithQuotingNeeded(decimal? input, string output)
     {
-        var result = renderer.Render(new CsvOptions(',', '"', ',', false), input);
+        var result = renderer.RenderObject(ContextFrom(new CsvOptions(',', '"', ',', false)), input);
         Assert.That(result, Is.EqualTo(output));
     }
 }

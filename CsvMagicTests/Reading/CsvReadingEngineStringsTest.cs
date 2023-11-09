@@ -17,7 +17,7 @@ public class CsvReadingEngineStringsTest
 
     private async Task<CsvTextData> ReadSingleLineAsCsv(string input)
     {
-        return await engine.Read(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))), CsvOptions.Builder().WithoutHeaders().Build()).SingleAsync();
+        return await engine.Read(CsvOptions.Builder().WithoutHeaders().Build(), new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input)))).SingleAsync();
     }
 
     // Simple text
