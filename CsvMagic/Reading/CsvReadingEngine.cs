@@ -15,19 +15,32 @@ public class CsvReadingEngine<TRow> where TRow : new()
 
     public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader)
     {
+        var context = new CsvReadingContext(options, parsers, reader);
+
         if (options.HandleHeaderRow)
         {
-            await reader.ReadLineAsync();
+            await context.NextLine();
         }
 
-        while (!reader.EndOfStream)
+        while (context.HasMoreLines())
         {
-            var line = await reader.ReadLineAsync();
-
+            var line = await context.NextLine();
             var rest = line;
-            var context = new CsvReadingContext(options, parsers);
 
-            var (row, _) =  rootParser.ParseNext(context, rest);
+            object? row;
+            try
+            {
+                (row, _) =  rootParser.ParseNext(context, rest);
+            }
+            catch (Exception ex)
+            {
+                throw new CsvReadingException(ex)
+                {
+                    ErrorLineNumber = context.LastReadLineNumber,
+                    ErrorLineText = context.LastReadLine
+                };
+            }
+
             yield return (TRow) row;
         }
     }

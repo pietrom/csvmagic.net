@@ -8,11 +8,16 @@ public class CsvReadingContext
 {
     public CsvOptions Options { get; }
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
+    private readonly StreamReader streamReader;
     private static readonly FieldParser DefaultParser = new DefaultParser();
+    public int LastReadLineNumber { get; private set; } = -1;
+    public string? LastReadLine { get; private set; } = null;
 
-    public CsvReadingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldParser> parsers)
+    public CsvReadingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldParser> parsers,
+        StreamReader streamReader)
     {
         this.parsers = parsers;
+        this.streamReader = streamReader;
         Options = options;
     }
 
@@ -39,5 +44,18 @@ public class CsvReadingContext
     private FieldParser? GetParserFor(Type t)
     {
         return parsers.ContainsKey(t) ? parsers[t] : null;
+    }
+
+    public async Task<string?> NextLine()
+    {
+        var line = await streamReader.ReadLineAsync();
+        LastReadLineNumber++;
+        LastReadLine = line;
+        return line;
+    }
+
+    public bool HasMoreLines()
+    {
+        return !streamReader.EndOfStream;
     }
 }
