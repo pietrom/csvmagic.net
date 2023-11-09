@@ -1,7 +1,6 @@
 namespace Samples.WriteCsv;
 
-public class SampleRow
-{
+public class SampleRow {
     public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

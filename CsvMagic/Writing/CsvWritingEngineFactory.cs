@@ -21,7 +21,7 @@ public class CsvWritingEngineFactory
         { typeof(DateTimeOffset?), new DefaultDateTimeOffsetRenderer()},
     };
 
-    public CsvWritingEngineFactory AddSerializer<TField>(FieldRenderer renderer)
+    public CsvWritingEngineFactory RegisterRenderer<TField>(FieldRenderer renderer)
     {
         _defaultRenderers[typeof(TField)] = renderer;
         return this;

@@ -33,12 +33,22 @@ using Samples.WriteCsv;
 
 var engine = new CsvWritingEngineFactory().Create<SampleRow>();
 
-var rows = new []
-{
-    new SampleRow { Id = 1, FirstName = "Eddy", LastName= "Merckx", BirtdDay = new DateOnly(1947,6,17), Ranking = 100 },
-    new SampleRow { Id = 2, FirstName = "Bernard \"Le Blaireau\"", LastName= "Hinault", BirtdDay = new DateOnly(1954, 11, 14), Ranking = 95.7m },
-    new SampleRow { Id = 100, FirstName = "Miguel", LastName= "Indurain", BirtdDay = new DateOnly(1964, 7, 16), Ranking = 75.2m },
-    new SampleRow { Id = 501, FirstName = "Alberto", LastName= "Contador", BirtdDay = new DateOnly(1982, 12, 6), Ranking = 81.3m },
+var rows = new[] {
+    new SampleRow {
+        Id = 1, FirstName = "Eddy", LastName = "Merckx", BirtdDay = new DateOnly(1947, 6, 17), Ranking = 100
+    },
+    new SampleRow {
+        Id = 2, FirstName = "Bernard \"Le Blaireau\"", LastName = "Hinault",
+        BirtdDay = new DateOnly(1954, 11, 14), Ranking = 95.7m
+    },
+    new SampleRow {
+        Id = 100, FirstName = "Miguel", LastName = "Indurain", BirtdDay = new DateOnly(1964, 7, 16),
+        Ranking = 75.2m
+    },
+    new SampleRow {
+        Id = 501, FirstName = "Alberto", LastName = "Contador", BirtdDay = new DateOnly(1982, 12, 6),
+        Ranking = 81.3m
+    }
 };
 
 var options = CsvOptions.Default();
@@ -92,9 +102,74 @@ Id,FirstName,LastName,BirtdDay,Ranking,FullName
 ```
 
 ### Recursive rendering
+CsvMagic renders complex properties recursively, producing CSV records containing properties of nested object:
+Say you have the following classes:
+```csharp
+public class Pet {
+    public string Name { get; set; }
+    public Person Owner { get; set; }
+    public string Color { get; set; }
+}
 
-### Implementing custom renderers
+public class Person {
+    public string FullName { get; set; }
+    public Address Address { get; set; }
+    public int Age { get; set; }
+}
 
+public class Address {
+    public string Street { get; set; }
+    public string Number { get; set; }
+}
+```
+Rendering the following `rows`
+```csharp
+var rows = new[] {
+    new Pet {
+        Name = "Snow",
+        Owner = new Person {
+            FullName = "Pietro Martinelli", Address = new Address { Street = "Main Street", Number = "19/C" },
+            Age = 45
+        },
+        Color = "Black"
+    },
+    new Pet {
+        Name = "Birba",
+        Owner = new Person {
+            FullName = "Gargamella", Address = new Address { Street = "Wood Street", Number = "11" }, Age = 115
+        },
+        Color = "Brown"
+    },
+};
+```
+produces the followinf CSV content:
+```csv
+Name,FullName,Street,Number,Age,Color
+Snow,Pietro Martinelli,Main Street,19/C,45,Black
+Birba,Gargamella,Wood Street,11,115,Brown
+
+```
+**NOTE**: we're planning to handle this case a bit differently, producing a header row similar to
+```csv
+Name,Owner_FullName,Owner_Address_Street,Owner_Address_Number,Owner_Age,Color
+```
+in case of nested, complex objects.
+
+### Default renderers and custom renderers
+CsvMagic gives you the ability to control the way a property is rendered through the `interface FieldRenderer`.
+CsvMagic chooses an implementation of `FieldRenderer` and uses it to render the value of a property.
+The choice is made according to the following steps:
+- default rendered are provided *out of the box* for common types (and their *nullable* counterparts):
+  - int
+  - long
+  - decimal
+  - double
+  - int
+  - DateOnly
+  - DateTimeOffset
+  - string
+- invoking `CsvWritingEngineFactory.RegisterRenderer<T>(FieldRenderer)` you can force CsvMagic to use your own implementation of `FieldRender` every time a property of type `T` should be rendered
+- decorating a specific property with the `[CsvField(Renderer = typeof(CustomRenderer))]` attribute you can force CsvMagic to use your own implementation of `FieldRender` every time that property should be rendered
 ## Reading CSV streams
 ### DTOs and writable properties
 

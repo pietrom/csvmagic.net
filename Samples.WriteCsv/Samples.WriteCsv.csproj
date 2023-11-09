@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CsvMagic\CsvMagic.csproj" />
+        <ProjectReference Include="..\CsvMagic\CsvMagic.csproj"/>
     </ItemGroup>
 
 </Project>

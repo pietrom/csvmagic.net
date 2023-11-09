@@ -21,7 +21,7 @@ public class CsvReadingEngineFactory
         { typeof(DateTimeOffset?), new DefaultDateTimeOffsetParser()},
     };
 
-    public CsvReadingEngineFactory AddSerializer<TField>(FieldParser parser)
+    public CsvReadingEngineFactory RegisterParser<TField>(FieldParser parser)
     {
         _defaultParsers[typeof(TField)] = parser;
         return this;

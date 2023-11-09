@@ -12,7 +12,7 @@ public class CsvWritingEngineTest
     public async Task SerializeCsv()
     {
         var engine = new CsvWritingEngineFactory()
-                .AddSerializer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
+                .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
                 .Create<CsvWriteData>()
             ;
 
