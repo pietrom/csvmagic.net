@@ -1,32 +1,12 @@
 using CsvMagic;
 using CsvMagic.Writing;
+using CsvMagicTests.DataTypes;
 
 namespace CsvMagicTests.Writing;
 
 [TestFixture]
 public class WriteUsingComplexTypeRendererTest
 {
-    class Level0
-    {
-        public string Field00 { get; set; }
-        public Level1 Field01 { get; set; }
-        public int Field02 { get; set; }
-    }
-
-    class Level1
-    {
-        public int Field10 { get; set; }
-        public Level2 Field11 { get; set; }
-        public DateOnly Field12 { get; set; }
-    }
-
-    class Level2
-    {
-        public string Field20 { get; set; }
-        public DateOnly Field21 { get; set; }
-        public string Field22 { get; set; }
-    }
-
     [Test]
     public async Task ShouldNotWriteSetterOnlyProperty()
     {
