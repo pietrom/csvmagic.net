@@ -31,7 +31,7 @@ B,2,
 C,33xx333
 D,8765
 "));
-        Assert.That(ex.ErrorLineNumber, Is.EqualTo(3));
+        Assert.That(ex.LineNumber, Is.EqualTo(3));
     }
 
     [Test]
@@ -43,7 +43,7 @@ B,2,
 C,33xx333
 D,8765
 "));
-        Assert.That(ex.ErrorLineText, Is.EqualTo("C,33xx333"));
+        Assert.That(ex.LineText, Is.EqualTo("C,33xx333"));
     }
 
     private Task<IEnumerable<Row>> Read(string input)

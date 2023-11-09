@@ -6,6 +6,6 @@ public class CsvReadingException : Exception
     {
     }
 
-    public required int ErrorLineNumber { get; init; }
-    public required string? ErrorLineText { get; init; }
+    public required int LineNumber { get; init; }
+    public required string? LineText { get; init; }
 }

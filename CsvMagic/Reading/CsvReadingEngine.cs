@@ -36,8 +36,8 @@ public class CsvReadingEngine<TRow> where TRow : new()
             {
                 throw new CsvReadingException(ex)
                 {
-                    ErrorLineNumber = context.LastReadLineNumber,
-                    ErrorLineText = context.LastReadLine
+                    LineNumber = context.LastReadLineNumber,
+                    LineText = context.LastReadLine
                 };
             }
 
