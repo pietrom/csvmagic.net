@@ -13,6 +13,8 @@ public class CsvWritingEngineFactory
         { typeof(long?), new DefaultLongRenderer() },
         { typeof(decimal), new DefaultDecimalRenderer()},
         { typeof(decimal?), new DefaultDecimalRenderer()},
+        { typeof(double), new DefaultDoubleRenderer()},
+        { typeof(double?), new DefaultDoubleRenderer()},
         { typeof(DateOnly), new DefaultDateOnlyRenderer()},
         { typeof(DateOnly?), new DefaultDateOnlyRenderer()},
         { typeof(DateTimeOffset), new DefaultDateTimeOffsetRenderer()},
