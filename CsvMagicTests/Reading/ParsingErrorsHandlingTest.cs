@@ -1,5 +1,6 @@
 using CsvMagic;
 using CsvMagic.Reading;
+using CsvMagic.Reading.Parsers;
 
 namespace CsvMagicTests.Reading;
 
@@ -44,6 +45,30 @@ C,33xx333
 D,8765
 "));
         Assert.That(ex.LineText, Is.EqualTo("C,33xx333"));
+    }
+
+    [Test]
+    public void ShouldTrackTokenText()
+    {
+        var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read(@"Text,Value
+A,1
+B,2,
+C,33xx333
+D,8765
+"));
+        Assert.That(ex.TokenText, Is.EqualTo("33xx333"));
+    }
+
+    [Test]
+    public void ShouldTrackParserTag()
+    {
+        var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read(@"Text,Value
+A,1
+B,2,
+C,33xx333
+D,8765
+"));
+        Assert.That(ex.ParserTag, Is.EqualTo(nameof(DefaultIntParser)));
     }
 
     private Task<IEnumerable<Row>> Read(string input)

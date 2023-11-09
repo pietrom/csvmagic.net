@@ -2,10 +2,14 @@ namespace CsvMagic.Reading;
 
 public class CsvReadingException : Exception
 {
-    public CsvReadingException(Exception nested) : base("Error reading CSV", nested)
+    public CsvReadingException(Exception nested, CsvReadingContext context) : base("Error reading CSV", nested)
     {
+        LineNumber = context.LastReadLineNumber;
+        LineText = context.LastReadLine;
     }
 
-    public required int LineNumber { get; init; }
-    public required string? LineText { get; init; }
+    public int LineNumber { get; }
+    public string? LineText { get; }
+    public required string? TokenText { get; init; }
+    public required string ParserTag { get; init; }
 }

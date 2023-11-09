@@ -30,14 +30,18 @@ public class CsvReadingEngine<TRow> where TRow : new()
             object? row;
             try
             {
-                (row, _) =  rootParser.ParseNext(context, rest);
+                (row, rest) = rootParser.ParseNext(context, rest);
+            }
+            catch (CsvReadingException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                throw new CsvReadingException(ex)
+                throw new CsvReadingException(ex, context)
                 {
-                    LineNumber = context.LastReadLineNumber,
-                    LineText = context.LastReadLine
+                    ParserTag = rootParser.GetType().Name,
+                    TokenText = rest
                 };
             }
 

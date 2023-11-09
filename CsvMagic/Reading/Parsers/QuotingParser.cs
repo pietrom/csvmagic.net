@@ -4,6 +4,22 @@ public abstract class QuotingParser<T> : FieldParser
 {
     protected abstract T ParseValue(CsvReadingContext context, string? value);
 
+    private T SafeParseValue(CsvReadingContext context, string? value)
+    {
+        try
+        {
+            return ParseValue(context, value);
+        }
+        catch (Exception ex)
+        {
+            throw new CsvReadingException(ex, context)
+            {
+                TokenText = value,
+                ParserTag = GetType().Name
+            };
+        }
+    }
+
     public (object?, string?) ParseNext(CsvReadingContext context, string? text)
     {
         return GetNextAndRest(context, text);
@@ -13,7 +29,7 @@ public abstract class QuotingParser<T> : FieldParser
     {
         if (string.IsNullOrEmpty(text))
         {
-            return (ParseValue(context, text), null);
+            return (SafeParseValue(context, text), null);
         }
 
         if (text[0] != context.Options.Quoting)
@@ -23,7 +39,7 @@ public abstract class QuotingParser<T> : FieldParser
                 : firstDelimiter < 0 ? text : string.Empty;
 
             var rest = firstDelimiter >= 0 ? text.Substring(firstDelimiter + 1) : null;
-            return (ParseValue(context, next), rest);
+            return (SafeParseValue(context, next), rest);
         }
 
         var nextIndex = 1;
@@ -55,8 +71,8 @@ public abstract class QuotingParser<T> : FieldParser
         }
 
         return nextIndex <= text.Length - 1
-            ? (ParseValue(context, Sanitize(context.Options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
-            : (ParseValue(context, Sanitize(context.Options, text.Substring(1, text.Length - 2))), text.Last() == context.Options.Delimiter ? string.Empty : null);
+            ? (SafeParseValue(context, Sanitize(context.Options, text.Substring(1, nextIndex - 2))), text.Substring(nextIndex + 1))
+            : (SafeParseValue(context, Sanitize(context.Options, text.Substring(1, text.Length - 2))), text.Last() == context.Options.Delimiter ? string.Empty : null);
     }
 
     private string Sanitize(CsvOptions options, string text)
