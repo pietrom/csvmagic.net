@@ -15,6 +15,8 @@ public class CsvWritingEngineFactory
         { typeof(decimal?), new DefaultDecimalRenderer()},
         { typeof(double), new DefaultDoubleRenderer()},
         { typeof(double?), new DefaultDoubleRenderer()},
+        { typeof(bool), new DefaultBooleanRenderer()},
+        { typeof(bool?), new DefaultBooleanRenderer()},
         { typeof(DateOnly), new DefaultDateOnlyRenderer()},
         { typeof(DateOnly?), new DefaultDateOnlyRenderer()},
         { typeof(DateTimeOffset), new DefaultDateTimeOffsetRenderer()},

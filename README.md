@@ -167,6 +167,7 @@ The choice is made according to the following steps:
   - int
   - DateOnly
   - DateTimeOffset
+  - bool
   - string
 - invoking `CsvWritingEngineFactory.RegisterRenderer<T>(FieldRenderer)` you can force CsvMagic to use your own implementation of `FieldRender` every time a property of type `T` should be rendered
 - decorating a specific property with the `[CsvField(Renderer = typeof(CustomRenderer))]` attribute you can force CsvMagic to use your own implementation of `FieldRender` every time that property should be rendered
