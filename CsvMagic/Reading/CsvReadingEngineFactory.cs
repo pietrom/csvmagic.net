@@ -15,6 +15,8 @@ public class CsvReadingEngineFactory
         { typeof(decimal?), new DefaultDecimalParser()},
         { typeof(double), new DefaultDoubleParser()},
         { typeof(double?), new DefaultDoubleParser()},
+        { typeof(bool), new DefaultBooleanParser()},
+        { typeof(bool?), new DefaultBooleanParser()},
         { typeof(DateOnly), new DefaultDateOnlyParser()},
         { typeof(DateOnly?), new DefaultDateOnlyParser()},
         { typeof(DateTimeOffset), new DefaultDateTimeOffsetParser()},
