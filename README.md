@@ -14,8 +14,9 @@ in the command line, or using your preferred IDE's packages management facility.
 # Usage
 ## Writing CSV streams
 ### Getting Started
-Basically, you should get an instance of `CsvWritingEngine<T>` and passing an `IEnumerable<T>` to its `Write` method.
+Basically, you should get an instance of `CsvWritingEngine<T>` and pass an `IEnumerable<T>` to its `Write` method.
 In order to call `Write` you need a `StreamWriter` (handling the effective writing) and an instance of `CsvOptions` (controlling writing preferences).
+
 Here is the code:
 ```csharp
 public class SampleRow
@@ -172,6 +173,40 @@ The choice is made according to the following steps:
 - invoking `CsvWritingEngineFactory.RegisterRenderer<T>(FieldRenderer)` you can force CsvMagic to use your own implementation of `FieldRender` every time a property of type `T` should be rendered
 - decorating a specific property with the `[CsvField(Renderer = typeof(CustomRenderer))]` attribute you can force CsvMagic to use your own implementation of `FieldRender` every time that property should be rendered
 ## Reading CSV streams
+### Getting started
+Basically, you should get an instance of `CsvReadingEngine<T>` and pass a `StreamReader` to its `Read` method.
+In order to call `Write` you need an instance of `CsvOptions` (controlling reading preferences).
+
+Here is the code:
+```csharp
+public record SampleRow { // records have 
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public DateOnly BirtdDay { get; set; }
+    public decimal Ranking { get; set; }
+}
+```
+```csharp
+var engine = new CsvReadingEngineFactory().Create<SampleRow>();
+
+        await File.WriteAllTextAsync("cyclists.csv", @"Id,FirstName,LastName,BirtdDay,Ranking,FullName
+2,""Bernard """"Le Blaireau"""""",Hinault,1954-11-14,95.7
+100,Miguel,Indurain,1964-07-16,75.2
+");
+
+        var rows = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).ToListAsync();
+
+        foreach (var row in rows) {
+            Console.WriteLine(row);
+        }
+    }
+```
+The produced output is
+```
+SampleRow { Id = 2, FirstName = Bernard "Le Blaireau", LastName = Hinault, BirtdDay = 11/14/1954, Ranking = 95.7 }
+SampleRow { Id = 100, FirstName = Miguel, LastName = Indurain, BirtdDay = 7/16/1964, Ranking = 75.2 }
+```
 ### DTOs and writable properties
 
 ### Options
