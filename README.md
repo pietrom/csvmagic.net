@@ -208,7 +208,48 @@ SampleRow { Id = 2, FirstName = Bernard "Le Blaireau", LastName = Hinault, Birtd
 SampleRow { Id = 100, FirstName = Miguel, LastName = Indurain, BirtdDay = 7/16/1964, Ranking = 75.2 }
 ```
 ### DTOs and writable properties
+CsvMagic reads from CSV stream all public settable properties exposed by the class for which the `CsvReadingEngine`'s class has been created and from its superclasses.
 
+Try for example to define a type containing a *set-only* property, like `FullName` in the following code-snippet:
+```csharp
+public record SampleRowContainingSetOnlyProperty {
+    public int Id { get; set; }
+    private string firstName = string.Empty;
+    public string FirstName => firstName;
+    private string lastName = string.Empty;
+    public string LastName => lastName;
+
+    public string FullName {
+        set {
+            var fields = value.Split(' ');
+            firstName = fields[0];
+            lastName = fields[1];
+        }
+    }
+}
+```
+Now you can provide a CSV like
+```csv
+@"Id,FullName
+19,Pietro Martinelli
+"
+```
+and deserialize it with
+```csharp
+var engine = new CsvReadingEngineFactory().Create<SampleRowContainingSetOnlyProperty>();
+
+await File.WriteAllTextAsync("cyclists.csv", @"Id,FullName
+19,Pietro Martinelli
+");
+
+var row = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).SingleAsync();
+Console.WriteLine(row);
+```
+obtaining the following output:
+```
+SampleRowContainingSetOnlyProperty { Id = 19, FirstName = Pietro, LastName = Martinelli }
+```
+So, CsvMagic finds two fields in the input text `19,Pietro Martinelli`, and two *settable* properties in the target type, and invokes their setters.
 ### Options
 
 ### Recursive parsing

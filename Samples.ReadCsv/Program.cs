@@ -3,6 +3,7 @@ using Samples.ReadCsv;
 
 try {
     await GettingStartedProgram.Execute();
+    await SetOnlyPropertyProgram.Execute();
 }
 catch (CsvReadingException ex) {
     Console.WriteLine(ex.LineNumber);
