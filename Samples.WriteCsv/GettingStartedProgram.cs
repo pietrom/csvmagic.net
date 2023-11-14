@@ -34,6 +34,6 @@ public static class GettingStartedProgram {
         //     .WithDecimalSeparator(',')
         //     .Build();
 
-        await engine.Write(rows, new StreamWriter(File.OpenWrite("cyclists.csv")), options);
+        await engine.Write(options, rows, new StreamWriter(File.OpenWrite("cyclists.csv")));
     }
 }

@@ -11,7 +11,7 @@ public class CsvWritingEngine<TRow> {
         rootRenderer = new ComplexTypeRenderer<TRow>();
     }
 
-    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions options) {
+    public async Task Write(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer) {
         var context = new CsvWritingContext(options, renderers);
         if (options.HandleHeaderRow) {
             var headers = rootRenderer.RenderHeader(context);

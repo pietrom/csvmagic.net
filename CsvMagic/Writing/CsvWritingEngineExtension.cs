@@ -3,14 +3,20 @@
 namespace CsvMagic.Writing;
 
 public static class CsvWritingEngineExtension {
-    public static async Task<string> Write<T>(this CsvWritingEngine<T> engine, IList<T> items, CsvOptions options) {
+    public static async Task<string> WriteToString<T>(this CsvWritingEngine<T> engine, CsvOptions options, IEnumerable<T> items) {
         var stream = new MemoryStream();
-        await engine.Write(items, new StreamWriter(stream), options);
+        await engine.Write(options, items, new StreamWriter(stream));
         stream.Seek(0, SeekOrigin.Begin);
         return Encoding.UTF8.GetString(stream.ToArray());
     }
 
+    public static async Task WriteToFile<T>(this CsvWritingEngine<T> engine, CsvOptions options, IEnumerable<T> items, string filePath) {
+        var stream = File.OpenWrite(filePath);
+        await engine.Write(options, items, new StreamWriter(stream));
+        stream.Close();
+    }
+
     public static Task<string> Write<T>(this CsvWritingEngine<T> engine, IList<T> items) {
-        return engine.Write(items, CsvOptions.Default());
+        return engine.WriteToString(CsvOptions.Default(), items);
     }
 }

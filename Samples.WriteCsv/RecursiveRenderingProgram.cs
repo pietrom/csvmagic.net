@@ -24,6 +24,6 @@ public static class RecursiveRenderingProgram {
             }
         };
 
-        await engine.Write(rows, new StreamWriter(File.OpenWrite("pets.csv")), CsvOptions.Default());
+        await engine.Write(CsvOptions.Default(), rows, new StreamWriter(File.OpenWrite("pets.csv")));
     }
 }
