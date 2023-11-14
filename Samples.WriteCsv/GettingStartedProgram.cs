@@ -1,4 +1,4 @@
-using CsvMagic;
+﻿using CsvMagic;
 using CsvMagic.Writing;
 
 namespace Samples.WriteCsv;
@@ -27,12 +27,12 @@ public static class GettingStartedProgram {
 
         var options = CsvOptions.Default();
 
-// var options = CsvOptions.Builder()
-//     .WithoutHeaders()
-//     .WithDelimiter(';')
-//     .WithQuoting('\'')
-//     .WithDecimalSeparator(',')
-//     .Build();
+        // var options = CsvOptions.Builder()
+        //     .WithoutHeaders()
+        //     .WithDelimiter(';')
+        //     .WithQuoting('\'')
+        //     .WithDecimalSeparator(',')
+        //     .Build();
 
         await engine.Write(rows, new StreamWriter(File.OpenWrite("cyclists.csv")), options);
     }

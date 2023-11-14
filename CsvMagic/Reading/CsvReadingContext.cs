@@ -1,11 +1,10 @@
-using System.Reflection;
+﻿using System.Reflection;
 using CsvMagic.Reading.Parsers;
 using CsvMagic.Reflection;
 
 namespace CsvMagic.Reading;
 
-public class CsvReadingContext
-{
+public class CsvReadingContext {
     public CsvOptions Options { get; }
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly StreamReader streamReader;
@@ -14,48 +13,41 @@ public class CsvReadingContext
     public string? LastReadLine { get; private set; } = null;
 
     public CsvReadingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldParser> parsers,
-        StreamReader streamReader)
-    {
+        StreamReader streamReader) {
         this.parsers = parsers;
         this.streamReader = streamReader;
         Options = options;
     }
 
-    public FieldParser GetParserFor(PropertyInfo p)
-    {
+    public FieldParser GetParserFor(PropertyInfo p) {
         var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
         FieldParser? parser = null;
-        if (fieldAttr != null && fieldAttr.Parser != null)
-        {
+        if (fieldAttr != null && fieldAttr.Parser != null) {
             parser = (FieldParser?)Activator.CreateInstance(fieldAttr.Parser);
         }
 
         return parser ?? GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
     }
 
-    private static FieldParser GetDefaultParser(Type type)
-    {
+    private static FieldParser GetDefaultParser(Type type) {
         var genericType = typeof(ComplexTypeParser<>);
         var notGenericType = genericType.MakeGenericType(new[] { type });
         FieldParser parser = (FieldParser)Activator.CreateInstance(notGenericType);
         return parser;
     }
 
-    private FieldParser? GetParserFor(Type t)
-    {
+    private FieldParser? GetParserFor(Type t) {
         return parsers.ContainsKey(t) ? parsers[t] : null;
     }
 
-    public async Task<string?> NextLine()
-    {
+    public async Task<string?> NextLine() {
         var line = await streamReader.ReadLineAsync();
         LastReadLineNumber++;
         LastReadLine = line;
         return line;
     }
 
-    public bool HasMoreLines()
-    {
+    public bool HasMoreLines() {
         return !streamReader.EndOfStream;
     }
 }

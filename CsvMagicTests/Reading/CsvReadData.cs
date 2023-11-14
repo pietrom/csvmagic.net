@@ -1,9 +1,8 @@
-using CsvMagic;
+﻿using CsvMagic;
 
 namespace CsvMagicTests.Reading;
 
-public record CsvReadData : Data
-{
+public record CsvReadData : Data {
     public string? StringValue { get; set; }
     public long LongValue { get; set; }
     public DateOnly DefaultDateOnly { get; set; }

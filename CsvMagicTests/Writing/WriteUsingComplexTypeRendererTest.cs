@@ -1,15 +1,13 @@
-using CsvMagic;
+﻿using CsvMagic;
 using CsvMagic.Writing;
 using CsvMagicTests.DataTypes;
 
 namespace CsvMagicTests.Writing;
 
 [TestFixture]
-public class WriteUsingComplexTypeRendererTest
-{
+public class WriteUsingComplexTypeRendererTest {
     [Test]
-    public async Task ShouldNotWriteSetterOnlyProperty()
-    {
+    public async Task ShouldNotWriteSetterOnlyProperty() {
         var engine = new CsvWritingEngineFactory().Create<Level0>();
         var result = await engine.Write(new[] { new Level0 { Field00 = "F00", Field02 = 19, Field01 = new Level1
         {

@@ -1,4 +1,4 @@
-namespace Samples.WriteCsv;
+﻿namespace Samples.WriteCsv;
 
 public class SampleRow {
     public int Id { get; set; }

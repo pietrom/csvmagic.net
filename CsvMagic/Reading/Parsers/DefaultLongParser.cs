@@ -1,9 +1,7 @@
-namespace CsvMagic.Reading.Parsers;
+﻿namespace CsvMagic.Reading.Parsers;
 
-public class DefaultLongParser : SimpleParser<long>
-{
-    protected override long ParseValue(CsvReadingContext context, string value)
-    {
+public class DefaultLongParser : SimpleParser<long> {
+    protected override long ParseValue(CsvReadingContext context, string value) {
         return long.Parse(value);
     }
 }

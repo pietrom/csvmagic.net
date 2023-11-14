@@ -1,6 +1,5 @@
-namespace CsvMagicTests;
+﻿namespace CsvMagicTests;
 
-public record Data
-{
+public record Data {
     public int Counter { get; set; }
 }

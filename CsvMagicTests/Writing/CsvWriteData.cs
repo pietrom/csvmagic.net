@@ -1,9 +1,8 @@
-using CsvMagic;
+﻿using CsvMagic;
 
 namespace CsvMagicTests.Writing;
 
-public record CsvWriteData : Data
-{
+public record CsvWriteData : Data {
     public string? StringValue { get; set; }
     public long LongValue { get; set; }
     [CsvField(Renderer = typeof(DateOnlyRenderer))]

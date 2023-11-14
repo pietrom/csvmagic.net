@@ -1,9 +1,8 @@
-using CsvMagic.Writing.Renderers;
+﻿using CsvMagic.Writing.Renderers;
 
 namespace CsvMagic.Writing;
 
-public class CsvWritingEngineFactory
-{
+public class CsvWritingEngineFactory {
     private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>
     {
         { typeof(string), new DefaultStringRenderer() },
@@ -23,8 +22,7 @@ public class CsvWritingEngineFactory
         { typeof(DateTimeOffset?), new DefaultDateTimeOffsetRenderer()},
     };
 
-    public CsvWritingEngineFactory RegisterRenderer<TField>(FieldRenderer renderer)
-    {
+    public CsvWritingEngineFactory RegisterRenderer<TField>(FieldRenderer renderer) {
         _defaultRenderers[typeof(TField)] = renderer;
         return this;
     }

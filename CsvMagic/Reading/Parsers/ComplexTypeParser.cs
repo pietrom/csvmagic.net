@@ -1,24 +1,19 @@
-using System.Reflection;
+﻿using System.Reflection;
 using CsvMagic.Reflection;
 
 namespace CsvMagic.Reading.Parsers;
 
-public class ComplexTypeParser<TRow> : FieldParser where TRow : new()
-{
+public class ComplexTypeParser<TRow> : FieldParser where TRow : new() {
     private IReadOnlyList<(PropertyInfo, FieldParser)>? metadata;
 
-    public (object?, string?) ParseNext(CsvReadingContext context, string? text)
-    {
+    public (object?, string?) ParseNext(CsvReadingContext context, string? text) {
         metadata ??= InitParsers(context);
 
         var row = new TRow();
         var rest = text;
-        foreach (var (info, parser) in metadata)
-        {
-            if (rest == null)
-            {
-                throw new CsvReadingException(context)
-                {
+        foreach (var (info, parser) in metadata) {
+            if (rest == null) {
+                throw new CsvReadingException(context) {
                     ParserTag = nameof(ComplexTypeParser<TRow>),
                     TokenText = rest,
                     ErrorDetail = "Less Tokens Than Properties"
@@ -32,8 +27,7 @@ public class ComplexTypeParser<TRow> : FieldParser where TRow : new()
         return (row, rest);
     }
 
-    private IReadOnlyList<(PropertyInfo, FieldParser)> InitParsers(CsvReadingContext context)
-    {
+    private IReadOnlyList<(PropertyInfo, FieldParser)> InitParsers(CsvReadingContext context) {
         return ReflectionHelper.GetTypeProperties(typeof(TRow))
             .Where(p => p.CanWrite)
             .Select(

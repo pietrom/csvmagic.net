@@ -1,17 +1,14 @@
-namespace CsvMagicTests.DataTypes;
+﻿namespace CsvMagicTests.DataTypes;
 
 public record Username(string Value);
 
-public record Address
-{
-    public Address(string street, string number)
-    {
+public record Address {
+    public Address(string street, string number) {
         Street = street;
         Number = number;
     }
 
-    public Address()
-    {
+    public Address() {
     }
 
     public string Street { get; set; }

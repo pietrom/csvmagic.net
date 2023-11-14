@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace CsvMagic.Writing.Renderers;
 
@@ -14,8 +14,7 @@ public class DefaultBooleanRenderer : QuotableFieldRenderer<bool?> {
     public DefaultBooleanRenderer() : this("1", "0") {
     }
 
-    protected override string RenderValue(CsvWritingContext context, bool? value)
-    {
+    protected override string RenderValue(CsvWritingContext context, bool? value) {
         return value.HasValue ? value.Value ? trueText : falseText : string.Empty;
     }
 }

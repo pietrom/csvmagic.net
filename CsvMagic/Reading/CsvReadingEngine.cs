@@ -1,61 +1,48 @@
-using CsvMagic.Reading.Parsers;
+﻿using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 
-public class CsvReadingEngine<TRow> where TRow : new()
-{
+public class CsvReadingEngine<TRow> where TRow : new() {
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly FieldParser rootParser;
 
-    internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers)
-    {
+    internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers) {
         this.parsers = parsers;
         rootParser = new ComplexTypeParser<TRow>();
     }
 
-    public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader)
-    {
+    public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader) {
         var context = new CsvReadingContext(options, parsers, reader);
 
-        if (options.HandleHeaderRow)
-        {
+        if (options.HandleHeaderRow) {
             await context.NextLine();
         }
 
-        while (context.HasMoreLines())
-        {
+        while (context.HasMoreLines()) {
             var line = await context.NextLine();
             var rest = line;
 
             object? row;
-            try
-            {
+            try {
                 (row, rest) = rootParser.ParseNext(context, rest);
-            }
-            catch (CsvReadingException ex)
-            {
+            } catch (CsvReadingException ex) {
                 throw;
-            }
-            catch (Exception ex)
-            {
-                throw new CsvReadingException(ex, context)
-                {
+            } catch (Exception ex) {
+                throw new CsvReadingException(ex, context) {
                     ParserTag = rootParser.GetType().Name,
                     TokenText = rest,
                 };
             }
 
-            if (!string.IsNullOrEmpty(rest))
-            {
-                throw new CsvReadingException(context)
-                {
+            if (!string.IsNullOrEmpty(rest)) {
+                throw new CsvReadingException(context) {
                     ParserTag = nameof(CsvReadingEngine<TRow>),
                     TokenText = rest,
                     ErrorDetail = "Rest Not Empty"
                 };
             }
 
-            yield return (TRow) row;
+            yield return (TRow)row;
         }
     }
 }

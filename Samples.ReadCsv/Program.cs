@@ -4,8 +4,7 @@ using Samples.ReadCsv;
 try {
     await GettingStartedProgram.Execute();
     await SetOnlyPropertyProgram.Execute();
-}
-catch (CsvReadingException ex) {
+} catch (CsvReadingException ex) {
     Console.WriteLine(ex.LineNumber);
     Console.WriteLine(ex.LineText);
     Console.WriteLine(ex.ErrorDetail);

@@ -1,6 +1,5 @@
-namespace CsvMagic.Reading;
+﻿namespace CsvMagic.Reading;
 
-public interface FieldParser
-{
+public interface FieldParser {
     (object?, string?) ParseNext(CsvReadingContext context, string? text);
 }

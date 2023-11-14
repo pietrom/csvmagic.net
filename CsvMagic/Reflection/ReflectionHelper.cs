@@ -1,13 +1,10 @@
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace CsvMagic.Reflection;
 
-public static class ReflectionHelper
-{
-    public static IEnumerable<PropertyInfo> GetTypeProperties(Type? t)
-    {
-        if (t == null)
-        {
+public static class ReflectionHelper {
+    public static IEnumerable<PropertyInfo> GetTypeProperties(Type? t) {
+        if (t == null) {
             return Enumerable.Empty<PropertyInfo>();
         }
 

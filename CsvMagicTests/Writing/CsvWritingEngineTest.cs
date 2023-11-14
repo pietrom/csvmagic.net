@@ -1,16 +1,14 @@
-using System.Text;
+﻿using System.Text;
 using CsvMagic;
 using CsvMagic.Writing;
 
 namespace CsvMagicTests.Writing;
 
-public class CsvWritingEngineTest
-{
+public class CsvWritingEngineTest {
     private static readonly CsvOptions Options = CsvOptions.Builder().WithDelimiter(';').Build();
 
     [Test]
-    public async Task SerializeCsv()
-    {
+    public async Task SerializeCsv() {
         var engine = new CsvWritingEngineFactory()
                 .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
                 .Create<CsvWriteData>()

@@ -1,29 +1,24 @@
-using CsvMagic.Writing.Renderers;
+﻿using CsvMagic.Writing.Renderers;
 
 namespace CsvMagic.Writing;
 
-public class CsvWritingEngine<TRow>
-{
+public class CsvWritingEngine<TRow> {
     private readonly IReadOnlyDictionary<Type, FieldRenderer> renderers;
     private readonly ComplexTypeRenderer<TRow> rootRenderer;
 
-    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers)
-    {
+    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers) {
         this.renderers = renderers;
         rootRenderer = new ComplexTypeRenderer<TRow>();
     }
 
-    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions options)
-    {
+    public async Task Write(IEnumerable<TRow> rows, StreamWriter writer, CsvOptions options) {
         var context = new CsvWritingContext(options, renderers);
-        if (options.HandleHeaderRow)
-        {
+        if (options.HandleHeaderRow) {
             var headers = rootRenderer.RenderHeader(context);
             await writer.WriteLineAsync(headers);
         }
 
-        foreach (var row in rows)
-        {
+        foreach (var row in rows) {
             var rowText = rootRenderer.RenderObject(context, row);
             await writer.WriteLineAsync(rowText);
         }

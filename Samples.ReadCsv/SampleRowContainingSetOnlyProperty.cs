@@ -1,4 +1,4 @@
-namespace Samples.ReadCsv;
+﻿namespace Samples.ReadCsv;
 
 public record SampleRowContainingSetOnlyProperty {
     public int Id { get; set; }

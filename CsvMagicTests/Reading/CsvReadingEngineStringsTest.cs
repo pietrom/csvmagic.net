@@ -1,22 +1,19 @@
-using System.Text;
+﻿using System.Text;
 using CsvMagic;
 using CsvMagic.Reading;
 
 namespace CsvMagicTests.Reading;
 
 [TestFixture]
-public class CsvReadingEngineStringsTest
-{
+public class CsvReadingEngineStringsTest {
     private CsvReadingEngine<CsvTextData> engine;
 
     [SetUp]
-    public void InitEngine()
-    {
+    public void InitEngine() {
         engine = new CsvReadingEngineFactory().Create<CsvTextData>();
     }
 
-    private async Task<CsvTextData> ReadSingleLineAsCsv(string input)
-    {
+    private async Task<CsvTextData> ReadSingleLineAsCsv(string input) {
         return await engine.Read(CsvOptions.Builder().WithoutHeaders().Build(), new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input)))).SingleAsync();
     }
 
@@ -34,15 +31,13 @@ public class CsvReadingEngineStringsTest
     [TestCase("\"\"\"A\"\"\",\"BBB\"", "\"A\"", "BBB")]
     [TestCase("\"via Garibaldi, 28\",BBB", "via Garibaldi, 28", "BBB")]
     [TestCase("AA\"A,\"BBB\"", "AA\"A", "BBB")]
-    public async Task Read(string input, string text1, string text2)
-    {
+    public async Task Read(string input, string text1, string text2) {
         var row = await ReadSingleLineAsCsv(input);
         Assert.That(row, Is.EqualTo(new CsvTextData { Text1 = text1, Text2 = text2 }));
     }
 }
 
-public record CsvTextData
-{
+public record CsvTextData {
     public string Text1 { get; set; }
     public string Text2 { get; set; }
 }

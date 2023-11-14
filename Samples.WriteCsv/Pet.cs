@@ -1,4 +1,4 @@
-namespace Samples.WriteCsv;
+﻿namespace Samples.WriteCsv;
 
 public class Pet {
     public string Name { get; set; }

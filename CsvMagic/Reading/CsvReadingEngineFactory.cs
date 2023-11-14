@@ -1,9 +1,8 @@
-using CsvMagic.Reading.Parsers;
+﻿using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 
-public class CsvReadingEngineFactory
-{
+public class CsvReadingEngineFactory {
     private readonly IDictionary<Type, FieldParser> _defaultParsers = new Dictionary<Type, FieldParser>()
     {
         { typeof(string), new DefaultStringParser()},
@@ -23,8 +22,7 @@ public class CsvReadingEngineFactory
         { typeof(DateTimeOffset?), new DefaultDateTimeOffsetParser()},
     };
 
-    public CsvReadingEngineFactory RegisterParser<TField>(FieldParser parser)
-    {
+    public CsvReadingEngineFactory RegisterParser<TField>(FieldParser parser) {
         _defaultParsers[typeof(TField)] = parser;
         return this;
     }

@@ -1,4 +1,4 @@
-using CsvMagic;
+﻿using CsvMagic;
 using CsvMagic.Reading;
 
 namespace Samples.ReadCsv;

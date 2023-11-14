@@ -1,21 +1,18 @@
-using CsvMagic;
+﻿using CsvMagic;
 using CsvMagic.Reading;
 using CsvMagic.Reading.Parsers;
 using CsvMagicTests.DataTypes;
 
 namespace CsvMagicTests.Reading;
 
-public class ParsingErrorsHandlingTest
-{
-    class Row
-    {
+public class ParsingErrorsHandlingTest {
+    class Row {
         public string Text { get; set; }
         public int Value { get; set; }
     }
 
     [Test]
-    public Task ReadWithoutErrors()
-    {
+    public Task ReadWithoutErrors() {
         return Read<Row>(@"Text,Value
 A,1
 B,2,
@@ -24,8 +21,7 @@ C,33333
     }
 
     [Test]
-    public void ShouldTrackErrorLineNumber()
-    {
+    public void ShouldTrackErrorLineNumber() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B,2,
@@ -36,8 +32,7 @@ D,8765
     }
 
     [Test]
-    public void ShouldTrackErrorLineText()
-    {
+    public void ShouldTrackErrorLineText() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B,2,
@@ -48,8 +43,7 @@ D,8765
     }
 
     [Test]
-    public void ShouldTrackTokenText()
-    {
+    public void ShouldTrackTokenText() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B,2,
@@ -60,8 +54,7 @@ D,8765
     }
 
     [Test]
-    public void ShouldTrackParserTag()
-    {
+    public void ShouldTrackParserTag() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B,2,
@@ -72,8 +65,7 @@ D,8765
     }
 
     [Test]
-    public void ShouldTrackMissingField()
-    {
+    public void ShouldTrackMissingField() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B
@@ -87,8 +79,7 @@ D,8765
     }
 
     [Test]
-    public void ShouldTrackRestNotEmpty()
-    {
+    public void ShouldTrackRestNotEmpty() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Row>(@"Text,Value
 A,1
 B,11,AA,22
@@ -97,13 +88,12 @@ D,8765
 "));
         Assert.That(ex.LineNumber, Is.EqualTo(2));
         Assert.That(ex.LineText, Is.EqualTo("B,11,AA,22"));
-        Assert.That(ex.ParserTag, Is.EqualTo( nameof(CsvReadingEngine<Row>)));
+        Assert.That(ex.ParserTag, Is.EqualTo(nameof(CsvReadingEngine<Row>)));
         Assert.That(ex.ErrorDetail, Is.EqualTo("Rest Not Empty"));
     }
 
     [Test]
-    public void ShouldTrackErrorsProperlyInMultilevelParsing()
-    {
+    public void ShouldTrackErrorsProperlyInMultilevelParsing() {
         var ex = Assert.ThrowsAsync<CsvReadingException>(() => Read<Level0>(@"Field00,Field10,Field20,Field21,Field22,Field12,Field02
 F00,11,Aaa,1978-03-19,Bbb,1978-11-11,19
 G00,22,Ccc,2100-06-07,Ddd,2211-12-12,17
@@ -116,8 +106,7 @@ I00,22,Ccc,2100-06-07,Ddd,2211-12-12,17
         Assert.That(ex.ParserTag, Is.EqualTo(nameof(DefaultDateOnlyParser)));
     }
 
-    private Task<IEnumerable<TRow>> Read<TRow>(string input) where TRow : new()
-    {
+    private Task<IEnumerable<TRow>> Read<TRow>(string input) where TRow : new() {
         return new CsvReadingEngineFactory().Create<TRow>().Read(input, CsvOptions.Builder().WithHeaders().Build());
     }
 }
