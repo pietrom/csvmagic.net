@@ -106,7 +106,7 @@ I00,22,Ccc,2100-06-07,Ddd,2211-12-12,17
         Assert.That(ex.ParserTag, Is.EqualTo(nameof(DefaultDateOnlyParser)));
     }
 
-    private Task<IEnumerable<TRow>> Read<TRow>(string input) where TRow : new() {
-        return new CsvReadingEngineFactory().Create<TRow>().Read(input, CsvOptions.Builder().WithHeaders().Build());
+    private async Task<IEnumerable<TRow>> Read<TRow>(string input) where TRow : new() {
+        return await new CsvReadingEngineFactory().Create<TRow>().ReadFromString(CsvOptions.Builder().WithHeaders().Build(), input).ToListAsync();
     }
 }
