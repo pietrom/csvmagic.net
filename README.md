@@ -143,14 +143,14 @@ var rows = new[] {
     },
 };
 ```
-produces the followinf CSV content:
+produces the following CSV content:
 ```csv
 Name,FullName,Street,Number,Age,Color
 Snow,Pietro Martinelli,Main Street,19/C,45,Black
 Birba,Gargamella,Wood Street,11,115,Brown
 
 ```
-**NOTE**: we're planning to handle this case a bit differently, producing a header row similar to
+**NOTE**: we're planning to handle this case a bit differently (see #29), producing a header row similar to
 ```csv
 Name,Owner_FullName,Owner_Address_Street,Owner_Address_Number,Owner_Age,Color
 ```
@@ -251,6 +251,7 @@ SampleRowContainingSetOnlyProperty { Id = 19, FirstName = Pietro, LastName = Mar
 ```
 So, CsvMagic finds two fields in the input text `19,Pietro Martinelli`, and two *settable* properties in the target type, and invokes their setters.
 ### Options
+CsvMagic supports in reading same config options supported in writing: see  *Writing CSV streams / Options* for full explanation
 
 ### Recursive parsing
 
@@ -260,3 +261,4 @@ So, CsvMagic finds two fields in the input text `19,Pietro Martinelli`, and two 
 
 ### Rows containing less fields than needed
 
+## The CSV format: quoting field values
