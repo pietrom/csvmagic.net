@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using CsvMagic.Reading;
 using CsvMagic.Reflection;
+using static CsvMagic.Writing.Renderers.FieldRendererHelper;
 
 namespace CsvMagic.Writing.Renderers;
 
@@ -14,7 +15,7 @@ public class ComplexTypeRenderer<TRow> : FieldRenderer {
 
     public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
         metadata ??= InitSerializers(context);
-        var prefix = propertyInfo == null || !context.Options.FullyQualifyNestedProperties ? string.Empty : $"{propertyInfo.Name}_";
+        var prefix = propertyInfo == null || !context.Options.FullyQualifyNestedProperties ? string.Empty : $"{GetLabelFor(propertyInfo)}_";
         return metadata.SelectMany(x => x.Item2.RenderHeader(context, x.Item1).Select(y => $"{prefix}{y}"));
     }
 
@@ -26,15 +27,5 @@ public class ComplexTypeRenderer<TRow> : FieldRenderer {
                 p => (p, context.GetRendererFor(p)
                     )
             ).ToList();
-    }
-
-    private FieldRenderer? GetSerializerFor(PropertyInfo p) {
-        var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
-        FieldRenderer? serializer = null;
-        if (fieldAttr != null && fieldAttr.Renderer != null) {
-            serializer = (FieldRenderer?)Activator.CreateInstance(fieldAttr.Renderer);
-        }
-
-        return serializer;
     }
 }

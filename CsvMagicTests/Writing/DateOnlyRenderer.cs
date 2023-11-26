@@ -1,10 +1,9 @@
-﻿using System.Reflection;
-using CsvMagic;
-using CsvMagic.Writing;
+﻿using CsvMagic.Writing;
+using CsvMagic.Writing.Renderers;
 
 namespace CsvMagicTests.Writing;
 
-public class DateOnlyRenderer : FieldRenderer {
+public class DateOnlyRenderer : QuotableFieldRenderer<DateOnly> {
     private readonly string _format;
 
     public DateOnlyRenderer(string format = "yyyy-MM-dd") {
@@ -14,12 +13,7 @@ public class DateOnlyRenderer : FieldRenderer {
     public DateOnlyRenderer() : this("yyyy-MM-dd") {
     }
 
-    public string RenderObject(CsvWritingContext context, object? value) {
-        var dateOnlyValue = value as DateOnly?;
-        return dateOnlyValue.HasValue ? dateOnlyValue.Value.ToString(_format) : string.Empty;
-    }
-
-    public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
-        return new[] { propertyInfo?.Name ?? string.Empty };
+    protected override string RenderValue(CsvWritingContext context, DateOnly value) {
+        return value.ToString(_format);
     }
 }

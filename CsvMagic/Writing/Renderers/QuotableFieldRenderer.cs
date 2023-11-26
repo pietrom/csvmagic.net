@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using static CsvMagic.Writing.Renderers.FieldRendererHelper;
 
 namespace CsvMagic.Writing.Renderers;
 
@@ -22,6 +23,6 @@ public abstract class QuotableFieldRenderer<T> : FieldRenderer {
 
 
     public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
-        return new[] { propertyInfo != null ? propertyInfo.Name : string.Empty };
+        return new[] { propertyInfo != null ? GetLabelFor(propertyInfo) : string.Empty };
     }
 }

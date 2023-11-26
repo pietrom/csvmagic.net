@@ -1,4 +1,6 @@
-﻿namespace CsvMagicTests.DataTypes;
+﻿using CsvMagic;
+
+namespace CsvMagicTests.DataTypes;
 
 public record Level0 {
     public string Field00 { get; set; }
@@ -15,5 +17,27 @@ public record Level1 {
 public record Level2 {
     public string Field20 { get; set; }
     public DateOnly Field21 { get; set; }
+    public string Field22 { get; set; }
+}
+
+public record Level0WithCustomLabels {
+    public string Field00 { get; set; }
+    [CsvField(Label = "Nested0")]
+    public Level1WithCustomLabels Field01 { get; set; }
+    public int Field02 { get; set; }
+}
+
+public record Level1WithCustomLabels {
+    [CsvField(Label = "Int10")]
+    public int Field10 { get; set; }
+    [CsvField(Label = "Nested1")]
+    public Level2WithCustomLabels Field11 { get; set; }
+    public DateOnly Field12 { get; set; }
+}
+
+public record Level2WithCustomLabels {
+    public string Field20 { get; set; }
+    public DateOnly Field21 { get; set; }
+    [CsvField(Label = "Text22")]
     public string Field22 { get; set; }
 }
