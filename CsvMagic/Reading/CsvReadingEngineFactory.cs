@@ -27,5 +27,38 @@ public class CsvReadingEngineFactory {
         return this;
     }
 
-    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly());
+    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new EmptyConstructorRowFactory<TRow>());
+
+    public CsvReadingEngine<TRow> Create<TRow>(RowFactoryDelegate<TRow> factory) => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new RowFactoryDelegateWrapper<TRow>(factory));
+
+    public CsvReadingEngine<TRow> Create<TRow>(RowFactory factory) => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), factory);
+}
+
+public interface RowFactory {
+    object? Create(IDictionary<string, object?> fields);
+}
+
+public delegate TRow RowFactoryDelegate<TRow>(IDictionary<string, object?> fields);
+
+public class EmptyConstructorRowFactory<TRow> : RowFactory where TRow : new() {
+    public object Create(IDictionary<string, object?> fields) {
+        var row = new TRow();
+        var type = typeof(TRow);
+        foreach (var (key, value) in fields) {
+            type.GetProperty(key).SetValue(row, value);
+        }
+        return row;
+    }
+}
+
+public class RowFactoryDelegateWrapper<T> : RowFactory {
+    private readonly RowFactoryDelegate<T> factory;
+
+    public RowFactoryDelegateWrapper(RowFactoryDelegate<T> factory) {
+        this.factory = factory;
+    }
+
+    public object? Create(IDictionary<string, object?> fields) {
+        return factory(fields);
+    }
 }

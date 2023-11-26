@@ -3,13 +3,13 @@ using CsvMagic.Reflection;
 
 namespace CsvMagic.Reading.Parsers;
 
-public class ComplexTypeParser<TRow> : FieldParser where TRow : new() {
+public class ComplexTypeParser<TRow> : FieldParser {
     private IReadOnlyList<(PropertyInfo, FieldParser)>? metadata;
 
     public (object?, string?) ParseNext(CsvReadingContext context, string? text) {
         metadata ??= InitParsers(context);
 
-        var row = new TRow();
+        var fields = new Dictionary<string, object?>();
         var rest = text;
         foreach (var (info, parser) in metadata) {
             if (rest == null) {
@@ -21,9 +21,11 @@ public class ComplexTypeParser<TRow> : FieldParser where TRow : new() {
             }
 
             (var value, rest) = parser.ParseNext(context, rest);
-            info.SetValue(row, value);
+            fields.Add(info.Name, value);
         }
 
+        var factory = context.GetFactoryFor(typeof(TRow));
+        var row = factory.Create(fields);
         return (row, rest);
     }
 

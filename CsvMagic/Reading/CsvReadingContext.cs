@@ -9,18 +9,29 @@ public class CsvReadingContext {
     public CsvOptions Options { get; }
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
+    private readonly IDictionary<Type, RowFactory> factories;
     private readonly StreamReader streamReader;
     private static readonly FieldParser DefaultParser = new DefaultParser();
     public int LastReadLineNumber { get; private set; } = -1;
     public string? LastReadLine { get; private set; } = null;
 
     public CsvReadingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldParser> parsers,
-        IDictionary<(Type?, string), FieldParser> fieldParsers,
+        IDictionary<(Type?, string), FieldParser> fieldParsers, IDictionary<Type, RowFactory> factories,
         StreamReader streamReader) {
         this.parsers = parsers;
         this.fieldParsers = fieldParsers;
         this.streamReader = streamReader;
+        this.factories = factories;
         Options = options;
+    }
+
+    public RowFactory GetFactoryFor(Type type) {
+        return factories.GetOrDefault(type, () => {
+            var genericType = typeof(EmptyConstructorRowFactory<>);
+            var notGenericType = genericType.MakeGenericType(new[] { type });
+            RowFactory parser = (RowFactory)Activator.CreateInstance(notGenericType);
+            return parser;
+        });
     }
 
     public FieldParser GetParserFor(PropertyInfo p) {

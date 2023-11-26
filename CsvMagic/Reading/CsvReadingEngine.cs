@@ -4,19 +4,23 @@ using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 
-public class CsvReadingEngine<TRow> where TRow : new() {
+public class CsvReadingEngine<TRow> {
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
+    private readonly IDictionary<Type, RowFactory> factories;
     private readonly FieldParser rootParser;
 
-    internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers) {
+    internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, RowFactory factory) {
         this.parsers = parsers;
         rootParser = new ComplexTypeParser<TRow>();
         fieldParsers = new Dictionary<(Type?, string), FieldParser>();
+        factories = new Dictionary<Type, RowFactory>() {
+            { typeof(TRow), factory }
+        };
     }
 
     public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader) {
-        var context = new CsvReadingContext(options, parsers, fieldParsers, reader);
+        var context = new CsvReadingContext(options, parsers, fieldParsers, factories, reader);
 
         if (options.HandleHeaderRow) {
             await context.NextLine();
@@ -57,6 +61,8 @@ public class CsvReadingEngine<TRow> where TRow : new() {
 
     public interface ConfigurationBuilder {
         ConfigurationBuilder UsingParser(FieldParser renderer);
+        ConfigurationBuilder UsingFactory<TField>(RowFactoryDelegate<TField> factory);
+        ConfigurationBuilder UsingFactory(Type type, RowFactory factory);
     }
 
     private class PrivateConfigurationBuilder : ConfigurationBuilder {
@@ -70,6 +76,15 @@ public class CsvReadingEngine<TRow> where TRow : new() {
 
         public ConfigurationBuilder UsingParser(FieldParser renderer) {
             this.engine.fieldParsers.Add((propertyInfo.DeclaringType, propertyInfo.Name), renderer);
+            return this;
+        }
+
+        public ConfigurationBuilder UsingFactory<TField>(RowFactoryDelegate<TField> factory) {
+            return this.UsingFactory(typeof(TField), new RowFactoryDelegateWrapper<TField>(factory));
+        }
+
+        public ConfigurationBuilder UsingFactory(Type type, RowFactory factory) {
+            this.engine.factories.Add(type, factory);
             return this;
         }
     }
