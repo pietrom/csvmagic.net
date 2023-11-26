@@ -150,9 +150,18 @@ Snow,Pietro Martinelli,Main Street,19/C,45,Black
 Birba,Gargamella,Wood Street,11,115,Brown
 
 ```
-**NOTE**: we're planning to handle this case a bit differently (see #29), producing a header row similar to
+Thanks to #29, you can obtain fully-qualified property names in header row, too: rendering the same dataset as in the preview example with
+```
+var options = CsvOptions.Builder()
+    .FullyQualifyNestedProperties()
+    .Build()
+```
+produces the following CSV content:
 ```csv
 Name,Owner_FullName,Owner_Address_Street,Owner_Address_Number,Owner_Age,Color
+Snow,Pietro Martinelli,Main Street,19/C,45,Black
+Birba,Gargamella,Wood Street,11,115,Brown
+
 ```
 in case of nested, complex objects.
 
