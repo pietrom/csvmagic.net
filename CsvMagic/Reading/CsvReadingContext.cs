@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using CsvMagic.Helpers;
 using CsvMagic.Reading.Parsers;
 using CsvMagic.Reflection;
 
@@ -7,26 +8,32 @@ namespace CsvMagic.Reading;
 public class CsvReadingContext {
     public CsvOptions Options { get; }
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
+    private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
     private readonly StreamReader streamReader;
     private static readonly FieldParser DefaultParser = new DefaultParser();
     public int LastReadLineNumber { get; private set; } = -1;
     public string? LastReadLine { get; private set; } = null;
 
     public CsvReadingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldParser> parsers,
+        IDictionary<(Type?, string), FieldParser> fieldParsers,
         StreamReader streamReader) {
         this.parsers = parsers;
+        this.fieldParsers = fieldParsers;
         this.streamReader = streamReader;
         Options = options;
     }
 
     public FieldParser GetParserFor(PropertyInfo p) {
-        var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
-        FieldParser? parser = null;
-        if (fieldAttr != null && fieldAttr.Parser != null) {
-            parser = (FieldParser?)Activator.CreateInstance(fieldAttr.Parser);
-        }
+        var key = (p.DeclaringType, p.Name);
+        return fieldParsers.GetOrDefault(key, () => {
+            var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
+            FieldParser? parser = null;
+            if (fieldAttr != null && fieldAttr.Parser != null) {
+                parser = (FieldParser?)Activator.CreateInstance(fieldAttr.Parser);
+            }
 
-        return parser ?? GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
+            return parser ?? GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
+        });
     }
 
     private static FieldParser GetDefaultParser(Type type) {

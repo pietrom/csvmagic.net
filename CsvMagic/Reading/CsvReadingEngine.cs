@@ -1,18 +1,22 @@
-﻿using CsvMagic.Reading.Parsers;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 
 public class CsvReadingEngine<TRow> where TRow : new() {
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
+    private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
     private readonly FieldParser rootParser;
 
     internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers) {
         this.parsers = parsers;
         rootParser = new ComplexTypeParser<TRow>();
+        fieldParsers = new Dictionary<(Type?, string), FieldParser>();
     }
 
     public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader) {
-        var context = new CsvReadingContext(options, parsers, reader);
+        var context = new CsvReadingContext(options, parsers, fieldParsers, reader);
 
         if (options.HandleHeaderRow) {
             await context.NextLine();
@@ -43,6 +47,30 @@ public class CsvReadingEngine<TRow> where TRow : new() {
             }
 
             yield return (TRow)row;
+        }
+    }
+
+    public ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+        var propertyInfo = ((MemberExpression)cfg.Body).Member;
+        return new PrivateConfigurationBuilder(this, propertyInfo);
+    }
+
+    public interface ConfigurationBuilder {
+        ConfigurationBuilder UsingParser(FieldParser renderer);
+    }
+
+    private class PrivateConfigurationBuilder : ConfigurationBuilder {
+        private readonly CsvReadingEngine<TRow> engine;
+        private readonly MemberInfo propertyInfo;
+
+        public PrivateConfigurationBuilder(CsvReadingEngine<TRow> engine, MemberInfo propertyInfo) {
+            this.engine = engine;
+            this.propertyInfo = propertyInfo;
+        }
+
+        public ConfigurationBuilder UsingParser(FieldParser renderer) {
+            this.engine.fieldParsers.Add((propertyInfo.DeclaringType, propertyInfo.Name), renderer);
+            return this;
         }
     }
 }
