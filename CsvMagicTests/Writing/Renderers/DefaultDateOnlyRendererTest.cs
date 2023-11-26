@@ -21,6 +21,6 @@ public class DefaultDateOnlyRendererTest {
 
     [Test]
     public void RenderValueWithQuotingNeeded() {
-        Assert.That(renderer.RenderObject(ContextFrom(new CsvOptions('-', '"', '.', false)), new DateOnly(2023, 11, 5)), Is.EqualTo("\"2023-11-05\""));
+        Assert.That(renderer.RenderObject(ContextFrom(new CsvOptions('-', '"', '.', false, false)), new DateOnly(2023, 11, 5)), Is.EqualTo("\"2023-11-05\""));
     }
 }

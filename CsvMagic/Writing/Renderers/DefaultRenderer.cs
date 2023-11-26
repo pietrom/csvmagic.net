@@ -7,7 +7,7 @@ internal class DefaultRenderer : FieldRenderer {
         return value?.ToString() ?? string.Empty;
     }
 
-    public string RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
-        return propertyInfo != null ? propertyInfo.Name : string.Empty;
+    public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
+        return new[] { propertyInfo != null ? propertyInfo.Name : string.Empty };
     }
 }

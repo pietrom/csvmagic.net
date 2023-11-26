@@ -19,7 +19,7 @@ public class DateOnlyRenderer : FieldRenderer {
         return dateOnlyValue.HasValue ? dateOnlyValue.Value.ToString(_format) : string.Empty;
     }
 
-    public string RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
-        return propertyInfo?.Name ?? string.Empty;
+    public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
+        return new[] { propertyInfo?.Name ?? string.Empty };
     }
 }

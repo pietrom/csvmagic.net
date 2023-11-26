@@ -16,7 +16,7 @@ public static class CsvWritingEngineExtension {
         stream.Close();
     }
 
-    public static Task<string> Write<T>(this CsvWritingEngine<T> engine, IList<T> items) {
+    public static Task<string> WriteToString<T>(this CsvWritingEngine<T> engine, IList<T> items) {
         return engine.WriteToString(CsvOptions.Default(), items);
     }
 }

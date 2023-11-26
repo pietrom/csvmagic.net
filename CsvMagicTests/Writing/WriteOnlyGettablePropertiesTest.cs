@@ -20,7 +20,7 @@ public class WriteOnlyGettablePropertiesTest {
     [Test]
     public async Task ShouldNotWriteSetterOnlyProperty() {
         var engine = new CsvWritingEngineFactory().Create<Row>();
-        var result = await engine.Write(new[] { new Row { FullName = "Pietro Martinelli" } });
+        var result = await engine.WriteToString(new[] { new Row { FullName = "Pietro Martinelli" } });
         Assert.That(result, Is.EqualTo(@"FirstName,LastName
 Pietro,Martinelli
 "));

@@ -19,14 +19,14 @@ public class DefaultDoubleRendererTest {
     [TestCase(1234, "1234")]
     [TestCase(1234.56, "1234,56")]
     public void RenderCustom(double? input, string output) {
-        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions(';', '"', ',', false)), input);
+        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions(';', '"', ',', false, false)), input);
         Assert.That(result, Is.EqualTo(output));
     }
 
 
     [TestCase(1234.56, "\"1234,56\"")]
     public void RenderCustomWithQuotingNeeded(double? input, string output) {
-        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions(',', '"', ',', false)), input);
+        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions(',', '"', ',', false, false)), input);
         Assert.That(result, Is.EqualTo(output));
     }
 }

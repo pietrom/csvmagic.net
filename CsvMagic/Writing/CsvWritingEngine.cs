@@ -15,7 +15,7 @@ public class CsvWritingEngine<TRow> {
         var context = new CsvWritingContext(options, renderers);
         if (options.HandleHeaderRow) {
             var headers = rootRenderer.RenderHeader(context);
-            await writer.WriteLineAsync(headers);
+            await writer.WriteLineAsync(string.Join(options.Delimiter, headers));
         }
 
         foreach (var row in rows) {

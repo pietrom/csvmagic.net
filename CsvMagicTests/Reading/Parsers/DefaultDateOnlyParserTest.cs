@@ -21,8 +21,8 @@ public class DefaultDateOnlyParserTest {
 
     [Test]
     public void ParseIso8601StringProperlyWithQuotingNeeded() {
-        Assert.That(parser.ParseNext(ContextFrom(new CsvOptions('-', '"', '.', false)), "\"2023-11-05\"").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
+        Assert.That(parser.ParseNext(ContextFrom(new CsvOptions('-', '"', '.', false, false)), "\"2023-11-05\"").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
 
-        Assert.That(parser.ParseNext(ContextFrom(new CsvOptions('-', '"', '.', false)), "\"2023-11-05\"").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
+        Assert.That(parser.ParseNext(ContextFrom(new CsvOptions('-', '"', '.', false, false)), "\"2023-11-05\"").Item1, Is.EqualTo(new DateOnly(2023, 11, 5)));
     }
 }

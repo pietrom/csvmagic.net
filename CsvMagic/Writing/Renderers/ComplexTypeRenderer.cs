@@ -12,9 +12,10 @@ public class ComplexTypeRenderer<TRow> : FieldRenderer {
         return string.Join(context.Options.Delimiter, metadata.Select(x => x.Item2.RenderObject(context, x.Item1.GetValue(value))));
     }
 
-    public string RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
+    public IEnumerable<string> RenderHeader(CsvWritingContext context, PropertyInfo? propertyInfo = null) {
         metadata ??= InitSerializers(context);
-        return string.Join(context.Options.Delimiter, metadata.Select(x => x.Item2.RenderHeader(context, x.Item1)));
+        var prefix = propertyInfo == null || !context.Options.FullyQualifyNestedProperties ? string.Empty : $"{propertyInfo.Name}_";
+        return metadata.SelectMany(x => x.Item2.RenderHeader(context, x.Item1).Select(y => $"{prefix}{y}"));
     }
 
     private IReadOnlyList<(PropertyInfo, FieldRenderer)> InitSerializers(
