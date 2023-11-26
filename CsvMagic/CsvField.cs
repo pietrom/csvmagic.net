@@ -1,5 +1,6 @@
 ﻿namespace CsvMagic;
 
+[Obsolete("Use engine.Configure(...) instead")]
 [AttributeUsage(AttributeTargets.Property)]
 public class CsvField : Attribute {
     public Type? Renderer { get; set; }
