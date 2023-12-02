@@ -1,87 +1,9 @@
 image: mcr.microsoft.com/dotnet/sdk:7.0
 
-stages:
-  - build
-  - test
-#  - reporting
-  - pack
-  - deploy
+include:
+  - project: darwinsw/gitlab-pipeline-templates/dotnet-templates
+    ref: main
+    file: dotnet-library.yml
 
 variables:
-  TOOLS_DIR: "tools"
-  COVERAGE_DIR: "coverage"
   SOLUTION_NAME: "CsvMagic"
-  PACKAGES_DIR: "target"
-  PUBLIC_SITE: "https://pietrom.gitlab.io/csvmagic"
-  DEPENDENCIES_DIR: "dependencies"
-  CONFIGURATION: "Release"
-
-build:
-  stage: build
-  artifacts:
-    paths:
-      - "**/bin/${CONFIGURATION}/**"
-      - $DEPENDENCIES_DIR
-
-  script:
-    - dotnet restore --packages $DEPENDENCIES_DIR CsvMagic.sln
-    - dotnet build --configuration $CONFIGURATION CsvMagic.sln
-
-run_tests:
-  stage: test
-  script:
-    - dotnet restore --packages $DEPENDENCIES_DIR CsvMagic.sln
-    - cd CsvMagicTests
-    - dotnet test --configuration $CONFIGURATION CsvMagicTests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$COVERAGE_DIR/coverage /p:Include="[CsvMagic*]*" /p:Exclude="[nunit.*]*"
-  artifacts:
-    paths:
-      - "**/$COVERAGE_DIR"
-
-#build_coverage_report:
-#  stage: reporting
-#  script:
-#    - dotnet restore --packages $DEPENDENCIES_DIR CsvMagic.sln
-#    - cd CsvMagicTests
-#    - dotnet reportgenerator -reports:$COVERAGE_DIR/*.xml -targetdir:$COVERAGE_DIR/html-report '-assemblyfilters:+CsvMagic;+CsvMagic.*'
-#  artifacts:
-#    paths:
-#      - "**/$COVERAGE_DIR/html-report"
-#
-pack_assemblies:
-  stage: pack
-  rules:
-    - if: '$CI_COMMIT_TAG'
-  artifacts:
-    paths:
-      - "**/bin/${CONFIGURATION}/*.nupkg"
-  script:
-    - for prj in $(find . -name CsvMagic*.csproj) ; do  if [[ ${prj} != *"Tests"* ]] ; then sed -i "s/1.0.0-temp/$CI_COMMIT_TAG/" $prj ; cd $(dirname $prj) ; dotnet pack --configuration $CONFIGURATION ; cd .. ; fi ; done
-
-publish_assemblies:
-  stage: deploy
-  rules:
-    - if: '$CI_COMMIT_TAG'
-  script:
-    - for package in $(find . -name CsvMagic*.nupkg) ; do dotnet nuget push -s https://api.nuget.org/v3/index.json -k ${NUGET_PUSH_KEY} ${package} ; done
-
-#pages:
-#  stage: deploy
-#  dependencies:
-#    - build_coverage_report
-#  script:
-#    - echo 2
-#    - mkdir -p $COVERAGE_DIR/html-report
-#    - touch $COVERAGE_DIR/html-report/pippo.htm
-#    - if curl -s -f $PUBLIC_SITE/coverage/coverage.tgz > old-coverage.tgz ; then echo "Previous coverage reports acquired" ; tar xzf old-coverage.tgz ;  else echo "No previous coverage reports found" ; fi
-#    - rm -rf public/coverage/$CI_COMMIT_REF_NAME
-#    - mkdir -p public/coverage/$CI_COMMIT_REF_NAME
-#    - mv PostOffice.Tests/$COVERAGE_DIR/html-report public/coverage/$CI_COMMIT_REF_NAME
-#    - tar czf coverage.tgz public
-#    - mv coverage.tgz public/coverage
-#  artifacts:
-#    paths:
-#      - public
-#  only:
-#    - master
-#    - release
-#    - ci-dev
