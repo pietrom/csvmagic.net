@@ -4,6 +4,11 @@ CsvMagic is a free and easy to use .NET library to read/write data from delimite
 # .Net Support
 Currently CsvMagic is based on .Net 7.0. In the future the library could be backported to previous version of the framework, but at the moment such a porting activity han not been planned.
 
+# Badges
+| Branch  | Pipeline Status                                                                                                                                | Code Coverage                                                                  |
+|---------|:-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| main    | [![pipeline status](https://gitlab.com/darwinsw/csvmagic.net/badges/main/pipeline.svg)](https://gitlab.com/darwinsw/csvmagic.net/commits/main) | ![coverage](https://gitlab.com/darwinsw/csvmagic.net/badges/main/coverage.svg) |
+
 # Installation
 CsvMagic is distributed as *[nuget package](https://www.nuget.org/packages/CsvMagic)*: it can be added to a project simply launching
 ```bash
