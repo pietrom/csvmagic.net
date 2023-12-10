@@ -1,30 +1,17 @@
 ﻿using System.Text;
 using CsvMagic;
 using CsvMagic.Writing;
+using CsvMagicTests.DataTypes;
 
 namespace CsvMagicTests.Writing;
 
 public class WriteAllTest {
-    public class Data {
-        public string Text { get; set; }
-        public int IntValue { get; set; }
-        public long LongValue { get; set; }
-        public decimal DecimalValue { get; set; }
-        public double DoubleValue { get; set; }
-        public short ShortValue { get; set; }
-        public uint UintValue { get; set; }
-        public float FloatValue { get; set; }
-        public bool BoolValue { get; set; }
-        public DateOnly DateOnlyValue { get; set; }
-        public DateTimeOffset DateTimeOffsetValue { get; set; }
-    }
-
     [Test]
     public async Task SerializeCsv() {
-        var engine = new CsvWritingEngineFactory().Create<Data>();
+        var engine = new CsvWritingEngineFactory().Create<AllData>();
         var stream = new MemoryStream();
         await engine.Write(CsvOptions.Builder().WithoutHeaders().Build(), new[] {
-            new Data {
+            new AllData {
                 Text = "test",
                 IntValue = -19,
                 LongValue = 11,
