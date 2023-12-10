@@ -11,7 +11,6 @@ public class CsvReadingContext {
     private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
     private readonly IDictionary<Type, RowFactory> factories;
     private readonly StreamReader streamReader;
-    private static readonly FieldParser DefaultParser = new DefaultParser();
     public int LastReadLineNumber { get; private set; } = -1;
     public string? LastReadLine { get; private set; } = null;
 
