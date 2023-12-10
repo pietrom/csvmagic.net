@@ -7,7 +7,7 @@ Currently CsvMagic is based on .Net 7.0. In the future the library could be back
 # Badges
 | Branch  | Pipeline Status                                                                                                                                | Code Coverage                                                                  |
 |---------|:-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| main    | [![pipeline status](https://gitlab.com/darwinsw/csvmagic.net/badges/main/pipeline.svg)](https://gitlab.com/darwinsw/csvmagic.net/commits/main) | ![coverage](https://gitlab.com/darwinsw/csvmagic.net/badges/main/coverage.svg) |
+| main    | [![pipeline status](https://gitlab.com/darwinsw/csvmagic.net/badges/main/pipeline.svg)](https://gitlab.com/darwinsw/csvmagic.net/commits/main) | [![coverage](https://gitlab.com/darwinsw/csvmagic.net/badges/main/coverage.svg)](https://darwinsw.gitlab.io/csvmagic.net/coverage/main/html-report/index.htm) |
 
 # Installation
 CsvMagic is distributed as *[nuget package](https://www.nuget.org/packages/CsvMagic)*: it can be added to a project simply launching
