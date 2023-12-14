@@ -176,16 +176,25 @@ CsvMagic chooses an implementation of `FieldRenderer` and uses it to render the 
 The choice is made according to the following steps:
 - default rendered are provided *out of the box* for common types (and their *nullable* counterparts):
   - int
+  - uint
   - long
+  - short
   - decimal
   - double
-  - int
+  - float
   - DateOnly
   - DateTimeOffset
   - bool
   - string
 - invoking `CsvWritingEngineFactory.RegisterRenderer<T>(FieldRenderer)` you can force CsvMagic to use your own implementation of `FieldRender` every time a property of type `T` should be rendered
-- decorating a specific property with the `[CsvField(Renderer = typeof(CustomRenderer))]` attribute you can force CsvMagic to use your own implementation of `FieldRender` every time that property should be rendered
+- invoking `CsvWritingEngine.Configure(Configure<TField>(Expression<Func<TRow, TField>>).UsingRenderer(FieldRenderer)` you can force CsvMagic to use your own implementation of `FieldRender` every time the property referred by the `Expression` should be rendered; for example,
+  ```csharp
+  var engine = new CsvWritingEngineFactory()
+            .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
+            .Create<CsvWriteDataPoco>();
+  engine.Configure(x => x.BirthDay).UsingRenderer(new DateOnlyRenderer());
+  ```
+  configures a `CsvWritingEngine` that uses `new DateOnlyRenderer()` to render `CsvWriteDataPoco.BirthDay` property, and `new DateOnlyRenderer("yyyyMMdd")` to render all other `DateOnly` properties.
 ## Reading CSV streams
 ### Getting started
 Basically, you should get an instance of `CsvReadingEngine<T>` and pass a `StreamReader` to its `Read` method.
