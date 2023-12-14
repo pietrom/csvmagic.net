@@ -202,7 +202,7 @@ In order to call `Write` you need an instance of `CsvOptions` (controlling readi
 
 Here is the code:
 ```csharp
-public record SampleRow { // records have 
+public record SampleRow { // records have default `ToString` implementation we can rely on to produce test output
     public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
