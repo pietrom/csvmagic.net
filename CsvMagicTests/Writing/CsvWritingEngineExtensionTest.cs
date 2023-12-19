@@ -40,6 +40,12 @@ public class CsvWritingEngineExtensionTest {
     }
 
     [Test]
+    public async Task WriteToByteArray() {
+        var result = await engine.WriteToByteArray(CsvOptions.Default(), Input);
+        Assert.That(result, Is.EqualTo(Encoding.UTF8.GetBytes(Output)));
+    }
+
+    [Test]
     public async Task WriteToFile() {
         var filePath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
         await engine.WriteToFile(CsvOptions.Default(), Input, filePath);
