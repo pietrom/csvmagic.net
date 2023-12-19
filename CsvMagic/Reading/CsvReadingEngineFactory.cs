@@ -1,4 +1,5 @@
-﻿using CsvMagic.Reading.Parsers;
+﻿using CsvMagic.Helpers;
+using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 

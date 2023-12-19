@@ -1,4 +1,5 @@
-﻿using CsvMagic.Writing.Renderers;
+﻿using CsvMagic.Helpers;
+using CsvMagic.Writing.Renderers;
 
 namespace CsvMagic.Writing;
 

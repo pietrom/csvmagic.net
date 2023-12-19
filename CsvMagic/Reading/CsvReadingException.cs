@@ -13,7 +13,7 @@ public class CsvReadingException : Exception {
 
     public int LineNumber { get; }
     public string? LineText { get; }
-    public required string? TokenText { get; init; }
-    public required string ParserTag { get; init; }
+    public string? TokenText { get; init; }
+    public string ParserTag { get; init; }
     public string ErrorDetail { get; init; } = string.Empty;
 }
