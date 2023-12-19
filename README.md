@@ -2,7 +2,7 @@
 CsvMagic is a free and easy to use .NET library to read/write data from delimited record in streams.
 
 # .Net Support
-Currently CsvMagic is based on .Net 7.0. In the future the library could be backported to previous version of the framework, but at the moment such a porting activity han not been planned.
+Currently CsvMagic is based on .Net 6.0. In the future the library could be backported to previous version of the framework, but at the moment such a porting activity han not been planned.
 
 # Badges
 | Branch  | Pipeline Status                                                                                                                                | Code Coverage                                                                  |
