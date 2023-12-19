@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using CsvMagic;
 using CsvMagic.Writing;
 
@@ -75,6 +76,29 @@ public class CsvWritingEngineTest {
     }
 
     [Test]
+    public async Task SerializeCsvWithCustomLabelsAndGenericLabelStrategy() {
+        var engine = new CsvWritingEngineFactory()
+                .WithLabelStrategy(new UppercaseLabelFactory())
+                .Create<CsvWriteData>()
+            ;
+
+        engine.Configure(x => x.BirthDay).UsingLabel("The day of your birth");
+
+        var stream = new MemoryStream();
+        await engine.Write(Options, new[]
+        {
+            new CsvWriteData { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
+            new CsvWriteData { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
+        }, new StreamWriter(stream));
+        stream.Seek(0, SeekOrigin.Begin);
+        var result = Encoding.UTF8.GetString(stream.ToArray());
+        Assert.That(result, Is.EqualTo(@"COUNTER;STRINGVALUE;LONGVALUE;The day of your birth;OTHERDAY;OTHERSTRING
+1;pietrom;19;1978-03-19;2008-05-22;""pietro;m""
+2;cristinar;11;1978-11-11;2008-05-22;""cristina;r""
+"));
+    }
+
+    [Test]
     public async Task SerializeCsvWithCustomLabelsAndRendererWithoutAttributes() {
         var engine = new CsvWritingEngineFactory()
             .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
@@ -106,5 +130,11 @@ public class CsvWritingEngineTest {
 1;pietrom;19;1978-03-19;20080522;""pietro;m""
 2;cristinar;11;1978-11-11;20080522;""cristina;r""
 "));
+    }
+
+    class UppercaseLabelFactory : FieldLabelWritingStrategy {
+        public string GetLabel(PropertyInfo info) {
+            return info.Name.ToUpperInvariant();
+        }
     }
 }

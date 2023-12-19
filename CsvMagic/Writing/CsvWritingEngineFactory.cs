@@ -4,7 +4,7 @@ using CsvMagic.Writing.Renderers;
 namespace CsvMagic.Writing;
 
 public class CsvWritingEngineFactory {
-    private readonly IDictionary<Type, FieldRenderer> _defaultRenderers = new Dictionary<Type, FieldRenderer>
+    private readonly IDictionary<Type, FieldRenderer> defaultRenderers = new Dictionary<Type, FieldRenderer>
     {
         { typeof(string), new DefaultStringRenderer() },
         { typeof(int), new DefaultIntRenderer() },
@@ -29,10 +29,17 @@ public class CsvWritingEngineFactory {
         { typeof(DateTimeOffset?), new DefaultDateTimeOffsetRenderer()},
     };
 
+    private FieldLabelWritingStrategy strategy = new DefaultFieldLabelWritingStrategy();
+
     public CsvWritingEngineFactory RegisterRenderer<TField>(FieldRenderer renderer) {
-        _defaultRenderers[typeof(TField)] = renderer;
+        defaultRenderers[typeof(TField)] = renderer;
         return this;
     }
 
-    public CsvWritingEngine<TRow> Create<TRow>() => new CsvWritingEngine<TRow>(_defaultRenderers.AsReadOnly());
+    public CsvWritingEngine<TRow> Create<TRow>() => new CsvWritingEngine<TRow>(defaultRenderers.AsReadOnly(), strategy);
+
+    public CsvWritingEngineFactory WithLabelStrategy(FieldLabelWritingStrategy strategy) {
+        this.strategy = strategy;
+        return this;
+    }
 }

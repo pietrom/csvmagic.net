@@ -10,12 +10,15 @@ public class CsvWritingContext {
     private readonly IReadOnlyDictionary<Type, FieldRenderer> renderers;
     private readonly IDictionary<(Type?, string), FieldRenderer> fieldRenderers;
     private readonly IDictionary<(Type?, string), string> fieldLabels;
+    private readonly FieldLabelWritingStrategy fieldLabelWritingStrategy;
 
     public CsvWritingContext(CsvOptions options, IReadOnlyDictionary<Type, FieldRenderer> renderers,
-        IDictionary<(Type?, string), FieldRenderer> fieldRenderers, IDictionary<(Type?, string), string> fieldLabels) {
+        IDictionary<(Type?, string), FieldRenderer> fieldRenderers, IDictionary<(Type?, string), string> fieldLabels,
+        FieldLabelWritingStrategy fieldLabelWritingStrategy) {
         this.renderers = renderers;
         this.fieldRenderers = fieldRenderers;
         this.fieldLabels = fieldLabels;
+        this.fieldLabelWritingStrategy = fieldLabelWritingStrategy;
         Options = options;
     }
 
@@ -23,7 +26,7 @@ public class CsvWritingContext {
         (Type?, string) key = (info.DeclaringType, info.Name);
         return fieldLabels.GetOrDefault(key, () => {
             var attr = AttributeHelper.GetCsvFieldAttribute(info);
-            return attr != null && attr.Label != null ? attr.Label : info.Name;
+            return attr != null && attr.Label != null ? attr.Label : fieldLabelWritingStrategy.GetLabel(info);
         });
     }
 

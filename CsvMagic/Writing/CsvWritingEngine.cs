@@ -6,19 +6,23 @@ namespace CsvMagic.Writing;
 
 public class CsvWritingEngine<TRow> {
     private readonly IReadOnlyDictionary<Type, FieldRenderer> renderers;
+    private readonly FieldLabelWritingStrategy fieldLabelWritingStrategy;
     private readonly IDictionary<(Type, string), FieldRenderer> fieldRenderers;
     private readonly IDictionary<(Type, string), string> fieldLabels;
     private readonly ComplexTypeRenderer<TRow> rootRenderer;
 
-    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers) {
+    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers) : this(renderers, new DefaultFieldLabelWritingStrategy()) { }
+
+    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers, FieldLabelWritingStrategy fieldLabelWritingStrategy) {
         this.renderers = renderers;
+        this.fieldLabelWritingStrategy = fieldLabelWritingStrategy;
         rootRenderer = new ComplexTypeRenderer<TRow>();
         fieldRenderers = new Dictionary<(Type, string), FieldRenderer>();
         fieldLabels = new Dictionary<(Type, string), string>();
     }
 
     public async Task Write(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer) {
-        var context = new CsvWritingContext(options, renderers, fieldRenderers, fieldLabels);
+        var context = new CsvWritingContext(options, renderers, fieldRenderers, fieldLabels, fieldLabelWritingStrategy);
         if (options.HandleHeaderRow) {
             var headers = rootRenderer.RenderHeader(context);
             await writer.WriteLineAsync(string.Join(options.Delimiter, headers));
