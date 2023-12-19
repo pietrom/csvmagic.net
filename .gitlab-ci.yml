@@ -6,3 +6,5 @@ include:
 variables:
   SOLUTION_NAME: "CsvMagic"
   PUBLIC_SITE: "https://darwinsw.gitlab.io/csvmagic.net"
+  SDK_VERSION: "6.0"
+
