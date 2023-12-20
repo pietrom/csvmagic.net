@@ -103,21 +103,11 @@ public class CsvWritingEngineTest {
         var engine = new CsvWritingEngineFactory()
             .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
             .Create<CsvWriteDataPoco>();
-            engine.Configure(x => x.StringValue).UsingLabel("TextValue");
-            engine.Configure(x => x.BirthDay).UsingRenderer(new DateOnlyRenderer());
-            engine.Configure(x => x.OtherDay).UsingLabel("Another Day");
-            engine.Configure(x => x.OtherString).UsingLabel("Another String");
-        /*
-            [CsvField(Label = "TextValue")]
-            public string? StringValue { get; set; }
-            public long LongValue { get; set; }
-            [CsvField(Renderer = typeof(DateOnlyRenderer))]
-            public DateOnly BirthDay { get; set; }
-            [CsvField(Label = "Another Day")]
-            public DateOnly OtherDay { get; set; }
-            [CsvField(Label = "Another String")]
-            public string? OtherString { get; set; }
-         */
+            engine.Configure(x => x.StringValue).UsingLabel("TextValue")
+                .Configure(x => x.BirthDay).UsingRenderer(new DateOnlyRenderer())
+                .Configure(x => x.OtherDay).UsingLabel("Another Day")
+                .Configure(x => x.OtherString).UsingLabel("Another String");
+
         var stream = new MemoryStream();
         await engine.Write(Options, new[]
         {

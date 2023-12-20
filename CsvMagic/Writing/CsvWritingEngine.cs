@@ -44,6 +44,7 @@ public class CsvWritingEngine<TRow> {
     public interface ConfigurationBuilder {
         ConfigurationBuilder UsingLabel(string label);
         ConfigurationBuilder UsingRenderer(FieldRenderer renderer);
+        ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg);
     }
 
     private class PrivateConfigurationBuilder : ConfigurationBuilder {
@@ -63,6 +64,10 @@ public class CsvWritingEngine<TRow> {
         public ConfigurationBuilder UsingRenderer(FieldRenderer renderer) {
             this.engine.fieldRenderers.Add((propertyInfo.DeclaringType, propertyInfo.Name), renderer);
             return this;
+        }
+
+        public ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+            return this.engine.Configure(cfg);
         }
     }
 }
