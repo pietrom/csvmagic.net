@@ -1,4 +1,5 @@
 ﻿using CsvMagic;
+using CsvMagic.Reading;
 using CsvMagic.Reading.Parsers;
 using static CsvMagicTests.Reading.CsvReadingContextHelper;
 
@@ -12,6 +13,11 @@ public class DefaultBooleanParserTest {
     public void ParseUsingDefaults(string text, bool? value) {
         var parsed = new DefaultBooleanParser().ParseNext(ContextFrom(CsvOptions.Default()), text);
         Assert.That(parsed.Item1, Is.EqualTo(value));
+    }
+
+    [Test]
+    public void ParseWithException() {
+        var ex = Assert.Throws<CsvReadingException>(() => new DefaultBooleanParser().ParseNext(ContextFrom(CsvOptions.Default()), "P"));
     }
 
     [TestCase("T", true)]
