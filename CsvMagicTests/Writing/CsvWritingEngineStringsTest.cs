@@ -15,7 +15,7 @@ public class CsvWritingEngineStringsTest {
         var engine = new CsvWritingEngineFactory().Create<CsvTextData>();
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[] { new CsvTextData(input0, input1) }, new StreamWriter(stream));
+        await engine.WriteToStream(Options, new[] { new CsvTextData(input0, input1) }, new StreamWriter(stream));
         stream.Seek(0, SeekOrigin.Begin);
         var result = Encoding.UTF8.GetString(stream.ToArray());
         Assert.That(result.Trim(), Is.EqualTo(output));

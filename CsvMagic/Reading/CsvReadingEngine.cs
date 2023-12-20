@@ -19,7 +19,7 @@ public class CsvReadingEngine<TRow> {
         };
     }
 
-    public async IAsyncEnumerable<TRow> Read(CsvOptions options, StreamReader reader) {
+    public async IAsyncEnumerable<TRow> ReadFromStream(CsvOptions options, StreamReader reader) {
         var context = new CsvReadingContext(options, parsers, fieldParsers, factories, reader);
 
         if (options.HandleHeaderRow) {

@@ -12,7 +12,7 @@ public static class GettingStartedProgram {
 100,Miguel,Indurain,1964-07-16,75.2
 ");
 
-        var rows = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).ToListAsync();
+        var rows = await engine.ReadFromStream(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).ToListAsync();
 
         foreach (var row in rows) {
             Console.WriteLine(row);

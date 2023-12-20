@@ -10,7 +10,7 @@ public class WriteAllTest {
     public async Task SerializeCsv() {
         var engine = new CsvWritingEngineFactory().Create<AllData>();
         var stream = new MemoryStream();
-        await engine.Write(CsvOptions.Builder().WithoutHeaders().Build(), new[] {
+        await engine.WriteToStream(CsvOptions.Builder().WithoutHeaders().Build(), new[] {
             new AllData {
                 Text = "test",
                 IntValue = -19,

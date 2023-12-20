@@ -16,7 +16,7 @@ public class CsvWritingEngineTest {
             ;
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[]
+        await engine.WriteToStream(Options, new[]
         {
             new CsvWriteData { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
             new CsvWriteData { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
@@ -37,7 +37,7 @@ public class CsvWritingEngineTest {
             ;
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[]
+        await engine.WriteToStream(Options, new[]
         {
             new CsvWriteDataWithCustomLabels { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
             new CsvWriteDataWithCustomLabels { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
@@ -62,7 +62,7 @@ public class CsvWritingEngineTest {
         engine.Configure(x => x.OtherString).UsingLabel("Another String");
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[]
+        await engine.WriteToStream(Options, new[]
         {
             new CsvWriteData { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
             new CsvWriteData { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
@@ -85,7 +85,7 @@ public class CsvWritingEngineTest {
         engine.Configure(x => x.BirthDay).UsingLabel("The day of your birth");
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[]
+        await engine.WriteToStream(Options, new[]
         {
             new CsvWriteData { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
             new CsvWriteData { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
@@ -109,7 +109,7 @@ public class CsvWritingEngineTest {
                 .Configure(x => x.OtherString).UsingLabel("Another String");
 
         var stream = new MemoryStream();
-        await engine.Write(Options, new[]
+        await engine.WriteToStream(Options, new[]
         {
             new CsvWriteDataPoco { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
             new CsvWriteDataPoco { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},

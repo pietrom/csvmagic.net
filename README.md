@@ -19,8 +19,8 @@ in the command line, or using your preferred IDE's packages management facility.
 # Usage
 ## Writing CSV streams
 ### Getting Started
-Basically, you should get an instance of `CsvWritingEngine<T>` and pass an `IEnumerable<T>` to its `Write` method.
-In order to call `Write` you need a `StreamWriter` (handling the effective writing) and an instance of `CsvOptions` (controlling writing preferences).
+Basically, you should get an instance of `CsvWritingEngine<T>` and pass an `IEnumerable<T>` to its `WriteToStream` method.
+In order to call `WriteToStream` you need a `StreamWriter` (handling the effective writing) and an instance of `CsvOptions` (controlling writing preferences).
 
 Here is the code:
 ```csharp
@@ -59,7 +59,7 @@ var rows = new[] {
 
 var options = CsvOptions.Default();
 
-await engine.Write(rows, new StreamWriter(File.OpenWrite("cyclists.csv")), options);
+await engine.WriteToStream(rows, new StreamWriter(File.OpenWrite("cyclists.csv")), options);
 ```
 And here the result:
 ```csv
@@ -197,8 +197,8 @@ The choice is made according to the following steps:
   configures a `CsvWritingEngine` that uses `new DateOnlyRenderer()` to render `CsvWriteDataPoco.BirthDay` property, and `new DateOnlyRenderer("yyyyMMdd")` to render all other `DateOnly` properties.
 ## Reading CSV streams
 ### Getting started
-Basically, you should get an instance of `CsvReadingEngine<T>` and pass a `StreamReader` to its `Read` method.
-In order to call `Write` you need an instance of `CsvOptions` (controlling reading preferences).
+Basically, you should get an instance of `CsvReadingEngine<T>` and pass a `StreamReader` to its `ReadFromStream` method.
+In order to call `ReadFromStream` you need an instance of `CsvOptions` (controlling reading preferences).
 
 Here is the code:
 ```csharp
@@ -218,7 +218,7 @@ var engine = new CsvReadingEngineFactory().Create<SampleRow>();
 100,Miguel,Indurain,1964-07-16,75.2
 ");
 
-        var rows = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).ToListAsync();
+        var rows = await engine.ReadFromStream(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).ToListAsync();
 
         foreach (var row in rows) {
             Console.WriteLine(row);
@@ -265,7 +265,7 @@ await File.WriteAllTextAsync("cyclists.csv", @"Id,FullName
 19,Pietro Martinelli
 ");
 
-var row = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).SingleAsync();
+var row = await engine.ReadFromStream(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).SingleAsync();
 Console.WriteLine(row);
 ```
 obtaining the following output:

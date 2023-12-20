@@ -21,7 +21,7 @@ public class CsvWritingEngine<TRow> {
         fieldLabels = new Dictionary<(Type, string), string>();
     }
 
-    public async Task Write(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer) {
+    public async Task WriteToStream(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer) {
         var context = new CsvWritingContext(options, renderers, fieldRenderers, fieldLabels, fieldLabelWritingStrategy);
         if (options.HandleHeaderRow) {
             var headers = rootRenderer.RenderHeader(context);

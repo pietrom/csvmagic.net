@@ -27,7 +27,7 @@ public class CsvWritingEngineExtensionTest {
     public async Task WriteToStreamWriter() {
         var stream = new MemoryStream();
         var writer = new StreamWriter(stream);
-        await engine.Write(CsvOptions.Default(), Input, writer);
+        await engine.WriteToStream(CsvOptions.Default(), Input, writer);
         stream.Seek(0, SeekOrigin.Begin);
         var result = Encoding.UTF8.GetString(stream.ToArray());
         Assert.That(result, Is.EqualTo(Output));

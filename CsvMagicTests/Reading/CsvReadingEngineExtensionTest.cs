@@ -27,7 +27,7 @@ public class CsvReadingEngineExtensionTest {
     public async Task ReadFromStreamReader() {
         var stream = new MemoryStream(Encoding.UTF8.GetBytes(Input));
         var reader = new StreamReader(stream);
-        var result = await engine.Read(CsvOptions.Default(), reader).ToListAsync();
+        var result = await engine.ReadFromStream(CsvOptions.Default(), reader).ToListAsync();
         Assert.That(result, Is.EquivalentTo(Output));
     }
 

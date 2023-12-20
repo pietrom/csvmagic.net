@@ -15,7 +15,7 @@ public class CsvReadingEngineNoAttributeConfigurationTest {
     }
 
     private async Task<List<CsvReadDataPoco>> ReadAsCsv(string input, CsvOptions? options = null) {
-        return await engine.Read(options ?? CsvOptions.Default(), new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))))
+        return await engine.ReadFromStream(options ?? CsvOptions.Default(), new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(input))))
             .ToListAsync();
     }
 

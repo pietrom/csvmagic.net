@@ -11,7 +11,7 @@ public static class SetOnlyPropertyProgram {
 19,Pietro Martinelli
 ");
 
-        var row = await engine.Read(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).SingleAsync();
+        var row = await engine.ReadFromStream(CsvOptions.Default(), new StreamReader(File.OpenRead("cyclists.csv"))).SingleAsync();
         Console.WriteLine(row);
     }
 }

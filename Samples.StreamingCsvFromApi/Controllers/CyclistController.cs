@@ -29,7 +29,7 @@ public class StreamingCsvController : ControllerBase {
 
         var stream = new MemoryStream();
         var engine = new CsvWritingEngineFactory().Create<SampleRow>();
-        await engine.Write(CsvOptions.Default(), cyclists, new StreamWriter(stream));
+        await engine.WriteToStream(CsvOptions.Default(), cyclists, new StreamWriter(stream));
         stream.Seek(0, SeekOrigin.Begin);
         return File(stream, "text/csv", "cyclists.csv");
     }
