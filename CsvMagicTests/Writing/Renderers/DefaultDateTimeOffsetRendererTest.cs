@@ -21,6 +21,11 @@ public class DefaultDateTimeOffsetRendererTest {
 
     [Test]
     public void RenderValueToIso8601StringWithQuotingNeeded() {
-        Assert.That(renderer.RenderObject(ContextFrom(new CsvOptions('-', '"', '.', false, false)), new DateTimeOffset(2023, 11, 5, 13, 24, 43, 123, TimeSpan.FromHours(-3))), Is.EqualTo("\"2023-11-05T13:24:43.1230000-03:00\""));
+        var options = CsvOptions.Builder()
+            .WithDelimiter('-')
+            .WithDecimalSeparator('.')
+            .WithoutHeaders()
+            .Build();
+        Assert.That(renderer.RenderObject(ContextFrom(options), new DateTimeOffset(2023, 11, 5, 13, 24, 43, 123, TimeSpan.FromHours(-3))), Is.EqualTo("\"2023-11-05T13:24:43.1230000-03:00\""));
     }
 }

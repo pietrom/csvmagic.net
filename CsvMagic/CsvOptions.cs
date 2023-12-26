@@ -1,8 +1,18 @@
 ﻿namespace CsvMagic;
 
-public record CsvOptions(char Delimiter, char Quoting, char DecimalSeparator, bool HandleHeaderRow, bool FullyQualifyNestedProperties) {
+public interface CsvOptions {
+    char Delimiter { get; }
+    char Quoting { get; }
+    char DecimalSeparator { get; }
+    bool HandleHeaderRow { get; }
+    bool FullyQualifyNestedProperties { get; }
+
     public static CsvOptions Default() => new CsvOptionsBuilder().Build();
 
+    public static CsvOptionsBuilder Builder() => new CsvOptionsBuilder();
+}
+
+internal record SimpleCsvOptions(char Delimiter, char Quoting, char DecimalSeparator, bool HandleHeaderRow, bool FullyQualifyNestedProperties) : CsvOptions {
     public static CsvOptionsBuilder Builder() => new CsvOptionsBuilder();
 }
 
@@ -43,5 +53,5 @@ public class CsvOptionsBuilder {
         return this;
     }
 
-    public CsvOptions Build() => new CsvOptions(delimiter, quoting, decimalSeparator, handleHeaderRow, fullyQualifyNestedProperties);
+    public CsvOptions Build() => new SimpleCsvOptions(delimiter, quoting, decimalSeparator, handleHeaderRow, fullyQualifyNestedProperties);
 }

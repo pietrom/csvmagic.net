@@ -18,13 +18,23 @@ public class DefaultDecimalParserTest {
     [TestCase("1234", 1234)]
     [TestCase("1234,56", 1234.56)]
     public void ParseCustom(string text, decimal value) {
-        var parsed = parser.ParseNext(ContextFrom(new CsvOptions(';', '"', ',', false, false)), text);
+        var options = CsvOptions.Builder()
+            .WithDelimiter(';')
+            .WithDecimalSeparator(',')
+            .WithoutHeaders()
+            .Build();
+        var parsed = parser.ParseNext(ContextFrom(options), text);
         Assert.That(parsed.Item1, Is.EqualTo(value));
     }
 
     [TestCase("\"1234,56\"", 1234.56)]
     public void ParseCustomWithQuotingNeeded(string text, decimal value) {
-        var parsed = parser.ParseNext(ContextFrom(new CsvOptions(',', '"', ',', false, false)), text);
+        var options = CsvOptions.Builder()
+            .WithDelimiter(',')
+            .WithDecimalSeparator(',')
+            .WithoutHeaders()
+            .Build();
+        var parsed = parser.ParseNext(ContextFrom(options), text);
         Assert.That(parsed.Item1, Is.EqualTo(value));
     }
 }

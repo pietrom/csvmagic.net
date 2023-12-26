@@ -18,7 +18,12 @@ public class DefaultLongRendererTest {
 
     [TestCase(-1234, "\"-1234\"")]
     public void RenderCustomWithQuotingNeeded(long? input, string output) {
-        var result = renderer.RenderObject(ContextFrom(new CsvOptions('-', '"', ',', false, false)), input);
+        var options = CsvOptions.Builder()
+            .WithDelimiter('-')
+            .WithDecimalSeparator(',')
+            .WithoutHeaders()
+            .Build();
+        var result = renderer.RenderObject(ContextFrom(options), input);
         Assert.That(result, Is.EqualTo(output));
     }
 }

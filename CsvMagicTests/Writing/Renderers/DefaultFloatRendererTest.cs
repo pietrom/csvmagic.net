@@ -20,14 +20,24 @@ public class DefaultFloatRendererTest {
     [TestCase(1234f, "1234")]
     [TestCase(1234.56f, "1234,56")]
     public void RenderCustom(float? input, string output) {
-        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions(';', '"', ',', false, false)), input);
+        var options = CsvOptions.Builder()
+            .WithDelimiter(';')
+            .WithDecimalSeparator(',')
+            .WithoutHeaders()
+            .Build();
+        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(options), input);
         Assert.That(result, Is.EqualTo(output));
     }
 
 
     [TestCase(-1234.56f, "\"-1234,56\"")]
     public void RenderCustomWithQuotingNeeded(float? input, string output) {
-        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(new CsvOptions('-', '"', ',', false, false)), input);
+        var options = CsvOptions.Builder()
+            .WithDelimiter('-')
+            .WithDecimalSeparator(',')
+            .WithoutHeaders()
+            .Build();
+        var result = renderer.RenderObject(CsvWritingContextHelper.ContextFrom(options), input);
         Assert.That(result, Is.EqualTo(output));
     }
 }

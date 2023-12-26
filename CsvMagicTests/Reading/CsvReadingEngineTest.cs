@@ -45,7 +45,7 @@ public class CsvReadingEngineTest {
         var input = @"1,pietrom,19,1978-03-19,19780319,
 2,russocri,11,1978-11-11,19781111,1978-11-11
 ";
-        var rows = await ReadAsCsv(input, new CsvOptions(',', '"', '.', false, false));
+        var rows = await ReadAsCsv(input, CsvOptions.Builder().WithoutHeaders().Build());
         Assert.That(rows, Is.EquivalentTo(new[]
         {
             new CsvReadData
@@ -67,7 +67,11 @@ public class CsvReadingEngineTest {
 1;pietrom;19;1978-03-19;19780319;
 2;russocri;11;1978-11-11;19781111;1978-11-11
 ";
-        var rows = await ReadAsCsv(input, new CsvOptions(';', '"', '.', true, false));
+        var options = CsvOptions.Builder()
+            .WithHeaders()
+            .WithDelimiter(';')
+            .Build();
+        var rows = await ReadAsCsv(input, options);
         Assert.That(rows, Is.EquivalentTo(new[]
         {
             new CsvReadData

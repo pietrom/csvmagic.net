@@ -21,6 +21,20 @@ public class DefaultDateOnlyRendererTest {
 
     [Test]
     public void RenderValueWithQuotingNeeded() {
-        Assert.That(renderer.RenderObject(ContextFrom(new CsvOptions('-', '"', '.', false, false)), new DateOnly(2023, 11, 5)), Is.EqualTo("\"2023-11-05\""));
+        var options = CsvOptions.Builder()
+            .WithDelimiter('-')
+            .WithoutHeaders()
+            .Build();
+        Assert.That(renderer.RenderObject(ContextFrom(options), new DateOnly(2023, 11, 5)), Is.EqualTo("\"2023-11-05\""));
+    }
+
+    [Test]
+    public void RenderValueWithQuotingNeededCustomQuoting() {
+        var options = CsvOptions.Builder()
+            .WithDelimiter('-')
+            .WithQuoting('|')
+            .WithoutHeaders()
+            .Build();
+        Assert.That(renderer.RenderObject(ContextFrom(options), new DateOnly(2023, 11, 5)), Is.EqualTo("|2023-11-05|"));
     }
 }
