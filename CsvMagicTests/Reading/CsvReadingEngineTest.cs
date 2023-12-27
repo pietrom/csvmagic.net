@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using CsvMagic;
 using CsvMagic.Reading;
+using CsvMagic.Reading.Parsers;
 
 namespace CsvMagicTests.Reading;
 
@@ -73,6 +74,34 @@ public class CsvReadingEngineTest {
             .WithDelimiter(';')
             .Build();
         var rows = await ReadAsCsv(input, options);
+        Assert.That(rows, Is.EquivalentTo(new[]
+        {
+            new CsvReadData
+            {
+                Counter = 1, StringValue = "pietrom", LongValue = 19, DefaultDateOnly = new DateOnly(1978, 3, 19),
+                CustomDateOnly = new DateOnly(1978, 3, 19), DefaultNullableDateOnly = null
+            },
+            new CsvReadData
+            {
+                Counter = 2, StringValue = "russocri", LongValue = 11, DefaultDateOnly = new DateOnly(1978, 11, 11),
+                CustomDateOnly = new DateOnly(1978, 11, 11), DefaultNullableDateOnly = new DateOnly(1978, 11, 11)
+            }
+        }));
+    }
+
+    [Test]
+    public async Task ReadUsingGlobalCustomParser() {
+        var localEngine = new CsvReadingEngineFactory()
+            .RegisterParser<DateOnly>(new DefaultDateOnlyParser("dd/MM/yyyy"))
+            .RegisterParser<DateOnly?>(new DefaultDateOnlyParser("dd/MM/yyyy"))
+            .Create<CsvReadData>();
+        localEngine.Configure(x => x.CustomDateOnly).UsingParser(new CustomDateOnlyParser());
+
+        var input = @"Counter,StringValue,LongValue,BirthDay
+1,pietrom,19,19/03/1978,19780319,
+2,russocri,11,11/11/1978,19781111,11/11/1978
+";
+        var rows = await localEngine.ReadFromString(CsvOptions.Default(), input).ToListAsync();
         Assert.That(rows, Is.EquivalentTo(new[]
         {
             new CsvReadData
