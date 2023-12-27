@@ -35,15 +35,7 @@ public class CsvReadingContext {
 
     public FieldParser GetParserFor(PropertyInfo p) {
         var key = (p.DeclaringType, p.Name);
-        return fieldParsers.GetOrDefault(key, () => {
-            var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
-            FieldParser? parser = null;
-            if (fieldAttr != null && fieldAttr.Parser != null) {
-                parser = (FieldParser?)Activator.CreateInstance(fieldAttr.Parser);
-            }
-
-            return parser ?? GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
-        });
+        return fieldParsers.GetOrDefault(key, () => GetParserFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType));
     }
 
     private static FieldParser GetDefaultParser(Type type) {

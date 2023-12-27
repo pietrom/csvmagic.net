@@ -24,23 +24,12 @@ public class CsvWritingContext {
 
     public string GetLabelFor(PropertyInfo info) {
         (Type?, string) key = (info.DeclaringType, info.Name);
-        return fieldLabels.GetOrDefault(key, () => {
-            var attr = AttributeHelper.GetCsvFieldAttribute(info);
-            return attr != null && attr.Label != null ? attr.Label : fieldLabelWritingStrategy.GetLabel(info);
-        });
+        return fieldLabels.GetOrDefault(key, () => fieldLabelWritingStrategy.GetLabel(info));
     }
 
     public FieldRenderer GetRendererFor(PropertyInfo p) {
         (Type?, string) key = (p.DeclaringType, p.Name);
-        return fieldRenderers.GetOrDefault(key, () => {
-            var fieldAttr = AttributeHelper.GetCsvFieldAttribute(p);
-            FieldRenderer? renderer = null;
-            if (fieldAttr != null && fieldAttr.Renderer != null) {
-                renderer = (FieldRenderer?)Activator.CreateInstance(fieldAttr.Renderer);
-            }
-
-            return renderer ?? GetRendererFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType);
-        });
+        return fieldRenderers.GetOrDefault(key, () => GetRendererFor(p.PropertyType) ?? GetDefaultParser(p.PropertyType));
     }
 
     private static FieldRenderer GetDefaultParser(Type type) {

@@ -11,9 +11,9 @@ public class CsvWritingEngineTest {
     [Test]
     public async Task SerializeCsvUsingCustomRendererToo() {
         var engine = new CsvWritingEngineFactory()
-                .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
-                .Create<CsvWriteData>()
-            ;
+            .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
+            .Create<CsvWriteData>();
+        engine.Configure(x => x.BirthDay).UsingRenderer(new DateOnlyRenderer());
 
         var stream = new MemoryStream();
         await engine.WriteToStream(Options, new[]
@@ -24,27 +24,6 @@ public class CsvWritingEngineTest {
         stream.Seek(0, SeekOrigin.Begin);
         var result = Encoding.UTF8.GetString(stream.ToArray());
         Assert.That(result, Is.EqualTo(@"Counter;StringValue;LongValue;BirthDay;OtherDay;OtherString
-1;pietrom;19;1978-03-19;20080522;""pietro;m""
-2;cristinar;11;1978-11-11;20080522;""cristina;r""
-"));
-    }
-
-    [Test]
-    public async Task SerializeCsvWithCustomLabelsThroughAttribute() {
-        var engine = new CsvWritingEngineFactory()
-                .RegisterRenderer<DateOnly>(new DateOnlyRenderer("yyyyMMdd"))
-                .Create<CsvWriteDataWithCustomLabels>()
-            ;
-
-        var stream = new MemoryStream();
-        await engine.WriteToStream(Options, new[]
-        {
-            new CsvWriteDataWithCustomLabels { Counter = 1, LongValue = 19, StringValue = "pietrom", BirthDay = new DateOnly(1978, 3, 19), OtherDay = new DateOnly(2008, 5, 22), OtherString = "pietro;m"},
-            new CsvWriteDataWithCustomLabels { Counter = 2, LongValue = 11, StringValue = "cristinar", BirthDay = new DateOnly(1978, 11, 11), OtherDay = new DateOnly(2008, 5, 22), OtherString = "cristina;r"},
-        }, new StreamWriter(stream));
-        stream.Seek(0, SeekOrigin.Begin);
-        var result = Encoding.UTF8.GetString(stream.ToArray());
-        Assert.That(result, Is.EqualTo(@"Counter;TextValue;LongValue;BirthDay;Another Day;Another String
 1;pietrom;19;1978-03-19;20080522;""pietro;m""
 2;cristinar;11;1978-11-11;20080522;""cristina;r""
 "));

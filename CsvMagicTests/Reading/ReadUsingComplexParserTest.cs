@@ -8,7 +8,6 @@ namespace CsvMagicTests.Reading;
 [TestFixture]
 public class ComplexTypeParserTest {
     record Row {
-        [CsvField(Parser = typeof(UsernameParser))]
         public Username Username { get; set; }
 
         public Address Address { get; set; }
@@ -19,6 +18,7 @@ public class ComplexTypeParserTest {
     [Test]
     public async Task Read() {
         var engine = new CsvReadingEngineFactory().Create<Row>();
+        engine.Configure(x => x.Username).UsingParser(new UsernameParser());
         var result =
             await engine.ReadFromString(CsvOptions.Builder().WithoutHeaders().Build(), @"pietrom,via delle Razziche,1,19")
             .SingleAsync();

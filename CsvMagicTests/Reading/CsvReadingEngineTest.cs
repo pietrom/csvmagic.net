@@ -11,6 +11,7 @@ public class CsvReadingEngineTest {
     [SetUp]
     public void InitEngine() {
         engine = new CsvReadingEngineFactory().Create<CsvReadData>();
+        engine.Configure(x => x.CustomDateOnly).UsingParser(new CustomDateOnlyParser());
     }
 
     private async Task<List<CsvReadData>> ReadAsCsv(string input, CsvOptions? options = null) {
