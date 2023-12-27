@@ -109,4 +109,20 @@ I00,22,Ccc,2100-06-07,Ddd,2211-12-12,17
     private async Task<IEnumerable<TRow>> Read<TRow>(string input) where TRow : new() {
         return await new CsvReadingEngineFactory().Create<TRow>().ReadFromString(CsvOptions.Builder().WithHeaders().Build(), input).ToListAsync();
     }
+
+    [Test]
+    public void ShouldWrapExceptionIntoCsvReadingException() {
+        var engine = new CsvReadingEngineFactory()
+            .RegisterParser<int>(new FailingParser())
+            .Create<Row>();
+
+        var options = CsvOptions.Builder().WithoutHeaders().Build();
+        Assert.ThrowsAsync<CsvReadingException>(() => engine.ReadFromString(options, "text,19").ToListAsync().AsTask());
+    }
+}
+
+public class FailingParser : FieldParser {
+    public (object?, string?) ParseNext(CsvReadingContext context, string? text) {
+        throw new Exception("Fake exception");
+    }
 }
