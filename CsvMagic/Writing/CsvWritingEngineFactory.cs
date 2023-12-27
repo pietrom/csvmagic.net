@@ -36,7 +36,7 @@ public class CsvWritingEngineFactory {
         return this;
     }
 
-    public CsvWritingEngine<TRow> Create<TRow>() => new CsvWritingEngine<TRow>(defaultRenderers.AsReadOnly(), strategy);
+    public CsvWritingEngine<TRow> Create<TRow>() => new SimpleCsvWritingEngine<TRow>(defaultRenderers.AsReadOnly(), strategy);
 
     public CsvWritingEngineFactory WithLabelStrategy(FieldLabelWritingStrategy strategy) {
         this.strategy = strategy;

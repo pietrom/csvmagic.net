@@ -4,16 +4,27 @@ using CsvMagic.Writing.Renderers;
 
 namespace CsvMagic.Writing;
 
-public class CsvWritingEngine<TRow> {
+public interface CsvWritingEngine<TRow> {
+    Task WriteToStream(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer);
+
+    ConfigurableCsvWritingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg);
+}
+
+public interface ConfigurableCsvWritingEngine<TRow> : CsvWritingEngine<TRow> {
+    ConfigurableCsvWritingEngine<TRow> UsingLabel(string label);
+    ConfigurableCsvWritingEngine<TRow> UsingRenderer(FieldRenderer renderer);
+}
+
+internal class SimpleCsvWritingEngine<TRow> : CsvWritingEngine<TRow> {
     private readonly IReadOnlyDictionary<Type, FieldRenderer> renderers;
     private readonly FieldLabelWritingStrategy fieldLabelWritingStrategy;
     private readonly IDictionary<(Type, string), FieldRenderer> fieldRenderers;
     private readonly IDictionary<(Type, string), string> fieldLabels;
     private readonly ComplexTypeRenderer<TRow> rootRenderer;
 
-    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers) : this(renderers, new DefaultFieldLabelWritingStrategy()) { }
+    internal SimpleCsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers) : this(renderers, new DefaultFieldLabelWritingStrategy()) { }
 
-    internal CsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers, FieldLabelWritingStrategy fieldLabelWritingStrategy) {
+    internal SimpleCsvWritingEngine(IReadOnlyDictionary<Type, FieldRenderer> renderers, FieldLabelWritingStrategy fieldLabelWritingStrategy) {
         this.renderers = renderers;
         this.fieldLabelWritingStrategy = fieldLabelWritingStrategy;
         rootRenderer = new ComplexTypeRenderer<TRow>();
@@ -36,37 +47,35 @@ public class CsvWritingEngine<TRow> {
         await writer.FlushAsync();
     }
 
-    public ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+    public ConfigurableCsvWritingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg) {
         var propertyInfo = ((MemberExpression)cfg.Body).Member;
-        return new PrivateConfigurationBuilder(this, propertyInfo);
+        return new PrivateConfigurableWritingEngine(this, propertyInfo);
     }
 
-    public interface ConfigurationBuilder {
-        ConfigurationBuilder UsingLabel(string label);
-        ConfigurationBuilder UsingRenderer(FieldRenderer renderer);
-        ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg);
-    }
-
-    private class PrivateConfigurationBuilder : ConfigurationBuilder {
-        private readonly CsvWritingEngine<TRow> engine;
+    private class PrivateConfigurableWritingEngine : ConfigurableCsvWritingEngine<TRow> {
+        private readonly SimpleCsvWritingEngine<TRow> engine;
         private readonly MemberInfo propertyInfo;
 
-        public PrivateConfigurationBuilder(CsvWritingEngine<TRow> engine, MemberInfo propertyInfo) {
+        public PrivateConfigurableWritingEngine(SimpleCsvWritingEngine<TRow> engine, MemberInfo propertyInfo) {
             this.engine = engine;
             this.propertyInfo = propertyInfo;
         }
 
-        public ConfigurationBuilder UsingLabel(string label) {
+        public ConfigurableCsvWritingEngine<TRow> UsingLabel(string label) {
             this.engine.fieldLabels.Add((propertyInfo.DeclaringType, propertyInfo.Name), label);
             return this;
         }
 
-        public ConfigurationBuilder UsingRenderer(FieldRenderer renderer) {
+        public ConfigurableCsvWritingEngine<TRow> UsingRenderer(FieldRenderer renderer) {
             this.engine.fieldRenderers.Add((propertyInfo.DeclaringType, propertyInfo.Name), renderer);
             return this;
         }
 
-        public ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+        public Task WriteToStream(CsvOptions options, IEnumerable<TRow> rows, StreamWriter writer) {
+            return this.engine.WriteToStream(options, rows, writer);
+        }
+
+        public ConfigurableCsvWritingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg) {
             return this.engine.Configure(cfg);
         }
     }
