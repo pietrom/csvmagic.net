@@ -4,13 +4,25 @@ using CsvMagic.Reading.Parsers;
 
 namespace CsvMagic.Reading;
 
-public class CsvReadingEngine<TRow> {
+public interface CsvReadingEngine<TRow> {
+    IAsyncEnumerable<TRow> ReadFromStream(CsvOptions options, StreamReader reader);
+
+    ConfigurableCsvReadingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg);
+}
+
+public interface ConfigurableCsvReadingEngine<TRow> : CsvReadingEngine<TRow> {
+    ConfigurableCsvReadingEngine<TRow> UsingParser(FieldParser renderer);
+    ConfigurableCsvReadingEngine<TRow> UsingFactory<TField>(RowFactoryDelegate<TField> factory);
+    ConfigurableCsvReadingEngine<TRow> UsingFactory(Type type, RowFactory factory);
+}
+
+internal class SimpleCsvReadingEngine<TRow> : CsvReadingEngine<TRow> {
     private readonly IReadOnlyDictionary<Type, FieldParser> parsers;
     private readonly IDictionary<(Type?, string), FieldParser> fieldParsers;
     private readonly IDictionary<Type, RowFactory> factories;
     private readonly FieldParser rootParser;
 
-    internal CsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, RowFactory factory) {
+    internal SimpleCsvReadingEngine(IReadOnlyDictionary<Type, FieldParser> parsers, RowFactory factory) {
         this.parsers = parsers;
         rootParser = new ComplexTypeParser<TRow>();
         fieldParsers = new Dictionary<(Type?, string), FieldParser>();
@@ -54,38 +66,40 @@ public class CsvReadingEngine<TRow> {
         }
     }
 
-    public ConfigurationBuilder Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+    public ConfigurableCsvReadingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg) {
         var propertyInfo = ((MemberExpression)cfg.Body).Member;
-        return new PrivateConfigurationBuilder(this, propertyInfo);
+        return new PrivateConfigurableReadingEngine(this, propertyInfo);
     }
 
-    public interface ConfigurationBuilder {
-        ConfigurationBuilder UsingParser(FieldParser renderer);
-        ConfigurationBuilder UsingFactory<TField>(RowFactoryDelegate<TField> factory);
-        ConfigurationBuilder UsingFactory(Type type, RowFactory factory);
-    }
-
-    private class PrivateConfigurationBuilder : ConfigurationBuilder {
-        private readonly CsvReadingEngine<TRow> engine;
+    private class PrivateConfigurableReadingEngine : ConfigurableCsvReadingEngine<TRow> {
+        private readonly SimpleCsvReadingEngine<TRow> engine;
         private readonly MemberInfo propertyInfo;
 
-        public PrivateConfigurationBuilder(CsvReadingEngine<TRow> engine, MemberInfo propertyInfo) {
+        public PrivateConfigurableReadingEngine(SimpleCsvReadingEngine<TRow> engine, MemberInfo propertyInfo) {
             this.engine = engine;
             this.propertyInfo = propertyInfo;
         }
 
-        public ConfigurationBuilder UsingParser(FieldParser renderer) {
+        public ConfigurableCsvReadingEngine<TRow> UsingParser(FieldParser renderer) {
             this.engine.fieldParsers.Add((propertyInfo.DeclaringType, propertyInfo.Name), renderer);
             return this;
         }
 
-        public ConfigurationBuilder UsingFactory<TField>(RowFactoryDelegate<TField> factory) {
+        public ConfigurableCsvReadingEngine<TRow> UsingFactory<TField>(RowFactoryDelegate<TField> factory) {
             return this.UsingFactory(typeof(TField), new RowFactoryDelegateWrapper<TField>(factory));
         }
 
-        public ConfigurationBuilder UsingFactory(Type type, RowFactory factory) {
+        public ConfigurableCsvReadingEngine<TRow> UsingFactory(Type type, RowFactory factory) {
             this.engine.factories.Add(type, factory);
             return this;
+        }
+
+        public IAsyncEnumerable<TRow> ReadFromStream(CsvOptions options, StreamReader reader) {
+            return this.engine.ReadFromStream(options, reader);
+        }
+
+        public ConfigurableCsvReadingEngine<TRow> Configure<TField>(Expression<Func<TRow, TField>> cfg) {
+            return this.engine.Configure(cfg);
         }
     }
 }

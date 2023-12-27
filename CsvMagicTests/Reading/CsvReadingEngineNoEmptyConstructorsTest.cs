@@ -21,9 +21,11 @@ public class CsvReadingEngineNoEmptyConstructorsTest {
             var address = (Address)fields[nameof(Person.Address)];
             var age = (long)fields[nameof(Person.Age)];
             return new Person(fullName, address, age);
-        });
-        engine.Configure(x => x.Address).UsingFactory(fields => new Address((Street)fields["Street"], (string)fields["City"]));
-        engine.Configure(x => x.Address.Street).UsingFactory(fields => new Street((string)fields["Name"], (string)fields["Number"]));
+        })
+            .Configure(x => x.Address)
+                .UsingFactory(fields => new Address((Street)fields["Street"], (string)fields["City"]))
+            .Configure(x => x.Address.Street)
+                .UsingFactory(fields => new Street((string)fields["Name"], (string)fields["Number"]));
     }
 
     [Test]

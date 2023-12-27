@@ -11,8 +11,10 @@ public class CsvReadingEngineTest {
 
     [SetUp]
     public void InitEngine() {
-        engine = new CsvReadingEngineFactory().Create<CsvReadData>();
-        engine.Configure(x => x.CustomDateOnly).UsingParser(new CustomDateOnlyParser());
+        engine = new CsvReadingEngineFactory()
+            .Create<CsvReadData>()
+            .Configure(x => x.CustomDateOnly)
+                .UsingParser(new CustomDateOnlyParser());
     }
 
     private async Task<List<CsvReadData>> ReadAsCsv(string input, CsvOptions? options = null) {
@@ -94,8 +96,9 @@ public class CsvReadingEngineTest {
         var localEngine = new CsvReadingEngineFactory()
             .RegisterParser<DateOnly>(new DefaultDateOnlyParser("dd/MM/yyyy"))
             .RegisterParser<DateOnly?>(new DefaultDateOnlyParser("dd/MM/yyyy"))
-            .Create<CsvReadData>();
-        localEngine.Configure(x => x.CustomDateOnly).UsingParser(new CustomDateOnlyParser());
+            .Create<CsvReadData>()
+            .Configure(x => x.CustomDateOnly)
+                .UsingParser(new CustomDateOnlyParser());
 
         var input = @"Counter,StringValue,LongValue,BirthDay
 1,pietrom,19,19/03/1978,19780319,

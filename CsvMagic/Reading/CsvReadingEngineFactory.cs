@@ -34,11 +34,11 @@ public class CsvReadingEngineFactory {
         return this;
     }
 
-    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new EmptyConstructorRowFactory<TRow>());
+    public CsvReadingEngine<TRow> Create<TRow>() where TRow : new() => new SimpleCsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new EmptyConstructorRowFactory<TRow>());
 
-    public CsvReadingEngine<TRow> Create<TRow>(RowFactoryDelegate<TRow> factory) => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new RowFactoryDelegateWrapper<TRow>(factory));
+    public CsvReadingEngine<TRow> Create<TRow>(RowFactoryDelegate<TRow> factory) => new SimpleCsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), new RowFactoryDelegateWrapper<TRow>(factory));
 
-    public CsvReadingEngine<TRow> Create<TRow>(RowFactory factory) => new CsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), factory);
+    public CsvReadingEngine<TRow> Create<TRow>(RowFactory factory) => new SimpleCsvReadingEngine<TRow>(_defaultParsers.AsReadOnly(), factory);
 }
 
 public interface RowFactory {
