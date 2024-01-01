@@ -13,3 +13,4 @@ await Examples.Writing.CustomPropertyLabelStrategy.Run();
 await Examples.Reading.GettingStarted.Run();
 await Examples.Reading.WritableProperties.Run();
 await Examples.Reading.CustomOptions.Run();
+await Examples.Reading.RecursiveParsing.Run();
