@@ -15,10 +15,10 @@
       <None Update="Reading\00-getting-started.input.csv">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Reading\01-writable-properties.input.csv">
+      <None Update="Reading\02-writable-properties.input.csv">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Reading\02-custom-options.input.csv">
+      <None Update="Reading\01-custom-options.input.csv">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

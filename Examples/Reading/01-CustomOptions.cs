@@ -5,7 +5,7 @@ namespace Examples.Reading;
 
 public static class CustomOptions {
     public static async Task Run() {
-        Console.WriteLine("02-CustomOptions");
+        Console.WriteLine("01-CustomOptions");
         var engine = new CsvReadingEngineFactory().Create<CsvData>();
         var options = CsvOptions.Builder()
             .WithDelimiter(';')
@@ -13,7 +13,7 @@ public static class CustomOptions {
             .WithoutHeaders()
             .Build()
             ;
-        var data = await engine.ReadFromFile(options, "Reading/02-custom-options.input.csv").ToListAsync();
+        var data = await engine.ReadFromFile(options, "Reading/01-custom-options.input.csv").ToListAsync();
         foreach (var item in data) {
             Console.WriteLine(item);
         }
