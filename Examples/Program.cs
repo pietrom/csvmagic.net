@@ -11,3 +11,4 @@ await Examples.Writing.CustomPropertyLabels.Run();
 await Examples.Writing.CustomPropertyLabelStrategy.Run();
 // Reading
 await Examples.Reading.GettingStarted.Run();
+await Examples.Reading.WritableProperties.Run();
