@@ -7,5 +7,7 @@ await Examples.Writing.RecursiveRenderingWIthFullyQualifiedNames.Run();
 await Examples.Writing.CustomRenderersPerType.Run();
 await Examples.Writing.CustomRenderersPerProperty.Run();
 await Examples.Writing.MixingGlobalAndPropertyRenderers.Run();
+await Examples.Writing.CustomPropertyLabels.Run();
+await Examples.Writing.CustomPropertyLabelStrategy.Run();
 // Reading
 await Examples.Reading.GettingStarted.Run();
