@@ -24,6 +24,9 @@
       <None Update="Reading\03-recursive-parsing.input.csv">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Reading\04-custom-parser-per-type.input.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
