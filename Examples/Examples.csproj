@@ -27,6 +27,9 @@
       <None Update="Reading\04-custom-parser-per-type.input.csv">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Reading\05-custom-parser-per-property.input.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
