@@ -11,4 +11,10 @@
       <ProjectReference Include="..\CsvMagic\CsvMagic.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Reading\00-getting-started.input.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
