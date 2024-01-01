@@ -5,12 +5,14 @@ namespace Examples.Reading;
 
 public static class WritableProperties {
     public static async Task Run() {
+        Console.WriteLine("01-WritableProperties");
         var engine = new CsvReadingEngineFactory().Create<SampleRowContainingSetOnlyProperty>();
         var options = CsvOptions.Default();
         var data = await engine.ReadFromFile(options, "Reading/01-writable-properties.input.csv").ToListAsync();
         foreach (var item in data) {
             Console.WriteLine(item);
         }
+        Console.WriteLine();
     }
 
     public record SampleRowContainingSetOnlyProperty {
